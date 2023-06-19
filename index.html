@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>ASSESSMENT_OF_METHODS</title>
+        <meta name="description" content="Crowdsourcing Mental Health self-care solutions.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./src/styles.css">
+        <!-- Custom styles for this template -->
+        <link href=".src/sidebars.css" rel="stylesheet">
+        
+        <link rel="stylesheet" href="./src/all.css">
+        <!-- Bootstrap core CSS -->
+        <link href="./src/bootstrap.min.css" rel="stylesheet">
+        <!-- Material Design Bootstrap -->
+        <link href="./src/mdb.min.css" rel="stylesheet"> 
+        <link href="./src/toastr.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./src/search.min.css"> 
+        
+        <link rel="manifest" href="https://ab3000.net/manifest.json">
+        <script src="./src/OneSignalSDK.js" async=""></script>
+
+        <script>
+            var OneSignal = window.OneSignal || [];
+            OneSignal.push(function() {
+              OneSignal.init({
+                appId: "7a33c062-1ba2-4756-9acc-c68085e2fca1",
+              });
+            });
+        </script>
+        <script src="./src/OneSignalPageSDKES6.js" async=""></script>
+        <style type="text/css">/* Chart.js */
+            @-webkit-keyframes chartjs-render-animation{from{opacity:0.99} to{opacity:1}}
+            @keyframes chartjs-render-animation{from{opacity:0.99} to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}
+        </style>
+        <link rel="stylesheet" href="./src/OneSignalSDKStyles.css">
+    </head>
+    <body class="bg-faded">
+        <!-- header  -->
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card my-2">
+                            <div class="card-body">
+                                <h4 class="card-title">Now, please assess mental health self-care techniques.</h4>
+                                <p class="card-text">The techniques below have been contributed by participants just like you. Assess at least three to move on to the final stage.</p>
+                            </div>
+                        </div>
+                        <!-- Section to guide to end.php -->
+                        <div id="customFinalMsgCard" class="card my-2 initiallyhidden">
+                            <div class="card-body">
+                                <h2 class="card-title text-success text-center" id="customFinalMsgTitle">Continue to the final stage!</h2>
+                                <p id="customFinalMsgBody" class="card-text font-italic text-center "><a href="https://ab3000.net/campaigns/mh/end.php">Proceed to the final stage of the study by clicking here</a>.<br><br>However, we also encourage you to continue assessing techniques, or to provide your own technique(s). It will help the community and our research.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- methods list -->
+        <section class="bg-alt" id="actionSection">
+            <div class="container-fluid row" style="width: 100%">
+                <!-- instruction. -->
+                <div class="col-12">
+                    <p class="lead">Assess at least three (any three) from the list to proceed.</p>
+                    <p>You may also help the community by adding a your own technique using the link at the end of the list!</p>
+                </div>
+                <div class="flex-shrink-0 p-3 bg-white overflow-scroll" style="width: 25%; height: 90vh">
+                    <ul class="list-unstyled ps-0">
+                      <li class="mb-1">
+                        <button class="btn-toggle align-items-center collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="true">
+                          Crowdsourced
+                        </button>
+                        <div class="collapse show" id="collapse-1">
+                            <div id="searchInputDiv" class="ui search mb-3">
+                                <input id="searchInput" class="prompt" type="text" placeholder="Search for a technique..." autocomplete="off">
+                                <div class="results"></div>
+                            </div>
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1" id="optionslist">
+                                <!-- <div class="list-group" id="optionslist">. -->
+                                <!-- class="list-group-item text-success list-group-item-action optionslistitem" -->
+                                <li><a href="#" data-id="347" class="optionslistitem text-success">Hiking</a>
+                                    <p class="initiallyhidden">Walking in contact with nature </p></li>
+                                <li><a href="#" data-id="340" class="text-success optionslistitem">Singing bowls</a>
+                                    <p class="initiallyhidden">Using the sound of singing bowl to calm down, relieve stress and tension in muscles</p></li>
+                                <li><a href="#" data-id="346" class="text-success optionslistitem">Cuddling</a>
+                                    <p class="initiallyhidden">Hugging someone you love/care about whilst lying down or sitting in a couch can be one of the most calming things you can do when depressed or feeling stressed.</p></li>
+                                <li><a href="#" data-id="344" class="text-success optionslistitem">Take photographs</a>
+                                    <p class="initiallyhidden">Go out for a walk and think only about the photos</p></li>
+                                <li><a href="#" data-id="338" class="text-success optionslistitem">Creative DIY</a>
+                                    <p class="initiallyhidden">Getting creative and building something, it could be a table you always wanted or fixing something that has been annoying you for a long time.</p></li>
+                                <div class="my-2 ml-3">
+                                    <a id="" href="#" data-toggle="modal" data-target="#addNewModal">
+                                        <i class="fas fa-plus-circle"></i> Add a new one!
+                                    </a>
+                                </div>
+                            </ul>
+                        </div>
+                      </li>
+                      <li class="mb-1">
+                        <button class="btn-toggle align-items-center collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="false">
+                          Authority recommendations
+                        </button>
+                        <div class="collapse" id="collapse-2">
+                            <div id="searchInputDiv" class="ui search mb-3">
+                                <input id="searchInput" class="prompt" type="text" placeholder="Search for a technique..." autocomplete="off">
+                                <div class="results"></div>
+                            </div>
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1" id="optionslist">
+                                <!-- <div class="list-group" id="optionslist">. -->
+                                <!-- class="list-group-item text-success list-group-item-action optionslistitem" -->
+                                <li><a href="#" data-id="347" class="optionslistitem text-success">Hiking</a>
+                                    <p class="initiallyhidden">Walking in contact with nature </p></li>
+                                <li><a href="#" data-id="340" class="text-success optionslistitem">Singing bowls</a>
+                                    <p class="initiallyhidden">Using the sound of singing bowl to calm down, relieve stress and tension in muscles</p></li>
+                                <li><a href="#" data-id="346" class="text-success optionslistitem">Cuddling</a>
+                                    <p class="initiallyhidden">Hugging someone you love/care about whilst lying down or sitting in a couch can be one of the most calming things you can do when depressed or feeling stressed.</p></li>
+                                <li><a href="#" data-id="344" class="text-success optionslistitem">Take photographs</a>
+                                    <p class="initiallyhidden">Go out for a walk and think only about the photos</p></li>
+                                <li><a href="#" data-id="338" class="text-success optionslistitem">Creative DIY</a>
+                                    <p class="initiallyhidden">Getting creative and building something, it could be a table you always wanted or fixing something that has been annoying you for a long time.</p></li>
+                                <div class="my-2 ml-3">
+                                    <a id="" href="#" data-toggle="modal" data-target="#addNewModal">
+                                        <i class="fas fa-plus-circle"></i> Add a new one!
+                                    </a>
+                                </div>
+                            </ul>
+                        </div>
+                      </li>
+                      <li class="mb-1">
+                        <button class="btn-toggle align-items-center collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-3" aria-expanded="false">
+                          AI suggestions
+                        </button>
+                        <div class="collapse" id="collapse-3">
+                            <div id="searchInputDiv" class="ui search mb-3">
+                                <input id="searchInput" class="prompt" type="text" placeholder="Search for a technique..." autocomplete="off">
+                                <div class="results"></div>
+                            </div>
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1" id="optionslist">
+                                <!-- <div class="list-group" id="optionslist">. -->
+                                <!-- class="list-group-item text-success list-group-item-action optionslistitem" -->
+                                <li><a href="#" data-id="347" class="optionslistitem text-success">Hiking</a>
+                                    <p class="initiallyhidden">Walking in contact with nature </p></li>
+                                <li><a href="#" data-id="340" class="text-success optionslistitem">Singing bowls</a>
+                                    <p class="initiallyhidden">Using the sound of singing bowl to calm down, relieve stress and tension in muscles</p></li>
+                                <li><a href="#" data-id="346" class="text-success optionslistitem">Cuddling</a>
+                                    <p class="initiallyhidden">Hugging someone you love/care about whilst lying down or sitting in a couch can be one of the most calming things you can do when depressed or feeling stressed.</p></li>
+                                <li><a href="#" data-id="344" class="text-success optionslistitem">Take photographs</a>
+                                    <p class="initiallyhidden">Go out for a walk and think only about the photos</p></li>
+                                <li><a href="#" data-id="338" class="text-success optionslistitem">Creative DIY</a>
+                                    <p class="initiallyhidden">Getting creative and building something, it could be a table you always wanted or fixing something that has been annoying you for a long time.</p></li>
+                                <div class="my-2 ml-3">
+                                    <a id="" href="#" data-toggle="modal" data-target="#addNewModal">
+                                        <i class="fas fa-plus-circle"></i> Add a new one!
+                                    </a>
+                                </div>
+                            </ul>
+                        </div>
+                      </li>
+                      <li class="border-top my-3"></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 flex-shrink-0 p-3 bg-white overflow-scroll" style="width: 75%;height: 90vh">   
+                    <div class="card my-2">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary text-center" id="optionTitle"></h4>
+                            <p id="optionDetails" class="card-text font-italic text-center "></p>
+                        </div>
+                    </div>  
+                    <div id="ratingPanel" class="invisible">
+                        <div class="row my-4"><div class="col-12"><h5>Familiarity: <span data-id="75" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How familiar are higher education students with this technique?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="75"><div class="mt-n1"><span class="float-left text-muted">Not at all familiar</span><span class="float-right text-muted">Extremely familiar</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Effectiveness: <span data-id="76" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>Is the technique effective?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="76"><div class="mt-n1"><span class="float-left text-muted">Not at all effective</span><span class="float-right text-muted">Extremely effective</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Affordability: <span data-id="77" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>In general, how affordable is this method for higher education students?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="77"><div class="mt-n1"><span class="float-left text-muted">Not at all affordable</span><span class="float-right text-muted">Extremely affordable</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Required level of sociality: <span data-id="80" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How much social interaction or cooperation does this method require?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="80"><div class="mt-n1"><span class="float-left text-muted">Not at all much</span><span class="float-right text-muted">Extremely much</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Time required to get started : <span data-id="81" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>Does it take a long time to get started with this technique?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="81"><div class="mt-n1"><span class="float-left text-muted">Not at all long</span><span class="float-right text-muted">Extremely long</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Ease of getting started: <span data-id="82" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How easy is it to just get started with trying out this method?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="82"><div class="mt-n1"><span class="float-left text-muted">Not at all easy</span><span class="float-right text-muted">Extremely easy</span></div></div></div>  
+                        <div>
+                            <p>Please justify your assessment. What do you think of this self-care technique and why did you assess it like that?</p>    
+                            <form>
+                                <div class="form-group">
+                                    <textarea class="form-control" id="additionalFeedback" rows="3" placeholder="..."></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row">
+                            <!-- reset button. -->
+                            <div class="col-3">
+                                <button id="resetBtn" class="btn btn-light btn-block px-0 waves-effect waves-light">Reset</button></div>
+                            <!-- submit button. -->
+                                <div class="col-9">
+                                <button id="submitValuesBtn" type="button" class="btn btn-success btn-block px-0 waves-effect waves-light">Submit!&gt;</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <hr>
+                        <div id="additems" class="collapse in">
+                            <div class="row">
+                                <div class="col-sm-12"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+
+        <!-- footer_ -->
+        <!-- <footer id="footer">
+            <div class="container"> <span class="float-right text-muted small"><a target="_blank" href="http://ubicomp.oulu.fi/">Center for Ubiquitous Computing</a> ©2020, Finland</span> </div>
+        </footer> -->
+        
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div id="addNewModalIntro">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Read me first</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>1) Add options that you think are genuinely helpful.</p>
+                                    <p>2) Check the box that appears when you type a descriptive title for your option. It contains a list of potentially similar options that already exist in our database.</p>
+                                    <p>3) Do not add options that are higly similar to the ones that already exist -- duplicate options cause all sorts of problems.</p>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal">Cancel</button>
+                            <button type="submit" id="proceedToSubmitOption" class="btn btn-success waves-effect waves-light">I promise - continue</button>
+                        </div>
+                    </div>
+                    <div id="addNewModalActual" class="initiallyhidden" style="display: none;">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add a self-care technique</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-sm-12">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="optionTitleInput">Add a short title:</label>
+                                        
+                                        <div id="searchInputDiv2" class="ui right aligned search">
+                                            <input required="" type="text" class="form-control prompt" id="optionTitleInput" aria-describedby="titleHelp" placeholder="Your new technique here." autocomplete="off">
+                                        <div class="results"></div></div>                                        
+                                        <small id="titleHelp" class="form-text text-muted">Just give it a short, descriptive title. It will be shown among the ones already there now!</small> </div>
+                                    
+                                    
+                                    
+                                    
+                                    <div class="form-group">
+                                        <label for="optionDetailsInput" class="active">Describe the technique in more detail:</label>
+                                        <textarea class="form-control" id="optionDetailsInput" rows="3" placeholder="A description of your technique." aria-describedby="oDetailsHelp"></textarea> <small id="oDetailsHelp" class="form-text text-muted">Be concise but exact. How does it all happen?</small> </div>
+                                    <div class="form-group">
+                                        <label for="optionUrlInput" class="active">URL (optional)</label>
+                                        <input type="url" class="form-control" id="optionUrlInput" aria-describedby="titleUrlHelp" placeholder="Where can others find more information about the technique?"> <small id="titleUrlHelp" class="form-text text-muted">Note that this is optional. The technique does not have to be described online.</small> </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal">Cancel</button>
+                            <button type="submit" id="submitOptionButton" class="btn btn-success waves-effect waves-light">Submit this self-care technique</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!--scripts loaded here-->
+        <script src=".src/sidebars.js"></script>
+        <script type="text/javascript" src="./src/jquery.min.js"></script>
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="./src/popper.min.js"></script>
+        <!-- Bootstrap core JavaScript -->
+        <script type="text/javascript" src="./src/bootstrap.min.js"></script>
+        <script src="./src/bootstrap.bundle.min.js"></script>
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="./src/mdb.min.js"></script><div class="hiddendiv common"></div>
+        <!-- easy popups: toastr and bootbox -->
+        <script src="./src/toastr.min.js"></script>
+        <script src="./src/bootbox.min.js"></script>
+        <script src="./src/scripts.js"></script>
+        <script src="./src/search.min.js"></script>
+        <script>
+            var problemId = "5dc94b821a6c2";
+            var ratingNowOption = -1;
+            var userId = "rand-1686192191Aq9HP0CjDXlz611";
+            toastr.options.timeOut = 5000;
+            
+            var allOptionsArray = [{"option_id":"347","title":"Hiking","option_details":"Walking in contact with nature ","primary_link":"","occurrences":"1"},{"option_id":"340","title":"Singing bowls","option_details":"Using the sound of singing bowl to calm down, relieve stress and tension in muscles","primary_link":"","occurrences":"2"},{"option_id":"346","title":"Cuddling","option_details":"Hugging someone you love\/care about whilst lying down or sitting in a couch can be one of the most calming things you can do when depressed or feeling stressed.","primary_link":"","occurrences":"7"},{"option_id":"344","title":"Take photographs","option_details":"Go out for a walk and think only about the photos","primary_link":"","occurrences":"12"},{"option_id":"338","title":"Creative DIY","option_details":"Getting creative and building something, it could be a table you always wanted or fixing something that has been annoying you for a long time.","primary_link":"","occurrences":"24"},{"option_id":"343","title":"Fishing","option_details":"Fishing, in the sea or in fresh water, allows you to get closer to nature, relax and teach the art of waiting. Promotes meditation.","primary_link":"","occurrences":"30"},{"option_id":"287","title":"Knitting","option_details":"Making small knitworks helps relax and empty your mind, lowers Bloods pressure etc...","primary_link":"","occurrences":"33"},{"option_id":"301","title":"sourdough baking","option_details":"baking bread. ","primary_link":"","occurrences":"35"},{"option_id":"303","title":"Social justice work","option_details":"Getting involved with your community and helping make things better for everyone can really boost your well-being. This can be difficult if you're acutely struggling with mental health issues, though.","primary_link":"","occurrences":"41"},{"option_id":"332","title":"fighting","option_details":"Physical combat with a partner through mutual consent. Beating another individual or getting beat into unconsciousness or submission. ","primary_link":"","occurrences":"47"},{"option_id":"284","title":"microdosing","option_details":"using psychedelic mushrooms in sub-psychedelic doses affect the users brain default mode network and help to question your current\/usual thought and emotional processes, so you can ponder if they're healthy and useful for you or just actively harming you. they raise the mood by serotonin system and affect the brain's default mode network. other psychedelics like lsd are also used this way.","primary_link":"","occurrences":"48"},{"option_id":"285","title":"microdosing","option_details":"psilocybin mushrooms in sub-psychedelic doses help you question your usual mindset & raise the mood.","primary_link":"","occurrences":"48"},{"option_id":"311","title":"Skating","option_details":"","primary_link":"","occurrences":"48"},{"option_id":"288","title":"microdosing","option_details":"affects your ability to self-reflection and question your thought patterns","primary_link":"https:\/\/www.psyty.fi","occurrences":"48"},{"option_id":"223","title":"Sensory deprivation tank","option_details":"A tank filled with water,which excludes all noises and visual stimuli. You just chill in the water with yourself.","primary_link":"https:\/\/www.oulufloats.fi\/","occurrences":"50"},{"option_id":"337","title":"Gardening ","option_details":"Being on my own or with my partner in the garden or at the allotment gives me a great sense of worth. It is relaxing.","primary_link":"","occurrences":"52"},{"option_id":"289","title":"microdosing","option_details":"raises mood, affects your ability to self-reflect and question your thought patterns","primary_link":"","occurrences":"54"},{"option_id":"307","title":"doing handcrafts","option_details":"any kind of woodwork, metalwork, renovating, repairing","primary_link":"","occurrences":"62"},{"option_id":"256","title":"Expressing gratitude (Gratitude Journal)","option_details":"Keeping a gratitude journal where you write one thing you are grateful for each day.","primary_link":"https:\/\/greatergood.berkeley.edu\/article\/item\/tips_for_keeping_a_gratitude_journal","occurrences":"65"},{"option_id":"304","title":"Lucid Dreaming","option_details":"Acknowledging that you're in a dream state and taking control of the dream world.","primary_link":"","occurrences":"66"},{"option_id":"224","title":"Sewing","option_details":"Sewing by hand or sewing machine. Make clothes, stuffed animals, blankets, pillowcases, totebags, art. The sky is your limit!","primary_link":"","occurrences":"69"},{"option_id":"177","title":"Blogging","option_details":"Writing content about specific subjects and publishing them for people to read on the internet. ","primary_link":"","occurrences":"69"},{"option_id":"298","title":"Writing fiction","option_details":"I write fictional stories as a hobby.","primary_link":"","occurrences":"70"},{"option_id":"305","title":"Writing songs","option_details":"Write your feelings into lyrics and composed it into songs. ","primary_link":"","occurrences":"73"},{"option_id":"286","title":"forcing positive thoughts","option_details":"actively\/sarcastically thinking \"i did well when i washed the dishes\/talked to a friend\/got out of bed\" even when it feels like bullshit","primary_link":"","occurrences":"75"},{"option_id":"293","title":"post-traumatic psychotherapy","option_details":"going to a professional to sort out feelings and life.","primary_link":"","occurrences":"77"},{"option_id":"260","title":"Dreaming big","option_details":"","primary_link":"","occurrences":"77"},{"option_id":"310","title":"Cat worship","option_details":"Pet a cat, listen to the purr, let the paws knead you, feel the soft fur, look at the cuteness and the majesty that is every cat. If you don't have access to one, then go to YouTube and find cat videos, is not hard!","primary_link":"https:\/\/youtu.be\/KIePsbJSS04","occurrences":"77"},{"option_id":"306","title":"Writing songs","option_details":"Write lyrics and compose songs.","primary_link":"","occurrences":"78"},{"option_id":"345","title":"Workout in gym","option_details":"Going to gym to workout","primary_link":"","occurrences":"78"},{"option_id":"309","title":"Sauna","option_details":"Relaxing time in sauna","primary_link":"","occurrences":"80"},{"option_id":"315","title":"Ice Bath","option_details":"Dipping in a tub of ice water i.e water containing ice to reduce it to freezing temperature.","primary_link":"","occurrences":"81"},{"option_id":"342","title":"Meditation","option_details":"The act of focusing on your breath in order to achieve relaxation","primary_link":"","occurrences":"82"},{"option_id":"235","title":"Colouring books","option_details":"Colouring is meditative and might be a better option for perfectionists than handcrafting. Can be combined to listening to audio books or music.","primary_link":"","occurrences":"82"},{"option_id":"203","title":"Writing poems","option_details":"Writing from stream of concioussness","primary_link":"","occurrences":"83"},{"option_id":"196","title":"Makeover ","option_details":"Dressing up in nice clothes and doing your makeup to make you feel better ","primary_link":"","occurrences":"84"},{"option_id":"313","title":"Seeking a meaningful, purpose life","option_details":"The constant process of seeking meaning, purpose and direction in my life has helped a lot to feel relieved, and have hope that things start to get better, little by little, step by step.","primary_link":"https:\/\/www.frontiersin.org\/articles\/10.3389\/fpsyg.2019.02778\/full","occurrences":"89"},{"option_id":"259","title":"Dancing","option_details":"","primary_link":"","occurrences":"91"},{"option_id":"237","title":"Puzzle","option_details":"Making puzzles, different sizes and different pictures","primary_link":"","occurrences":"91"},{"option_id":"262","title":"Go to sauna","option_details":"Go to sauna and relax","primary_link":"","occurrences":"91"},{"option_id":"276","title":"Yoga ","option_details":"Yoga ","primary_link":"","occurrences":"92"},{"option_id":"215","title":"Minimalism ","option_details":"A minimalistic mindset, not only with physical clutter but also mental clutter and priorites.","primary_link":"","occurrences":"92"},{"option_id":"245","title":"\"Herbs and spices\"","option_details":"Its controversial and definately not for everyone. But its a real shame that I find it helpful. After a long Day of doing math that jams up your brain, its nice to have something that nullifies your brain for a while.","primary_link":"","occurrences":"93"},{"option_id":"242","title":"Praying","option_details":"Turn to God and ask Him to change your life, save you and make you a new creation. Your suffering has a meaning, and it is temporary.","primary_link":"","occurrences":"94"},{"option_id":"197","title":"Progressive muscle relaxation","option_details":"It's a stress reduction technique based on tightening and relaxing specific muscle groups in a darkened environment while lying down, first developed by Edmund Jacobson.","primary_link":"","occurrences":"94"},{"option_id":"302","title":"Spending time with animals","option_details":"","primary_link":"","occurrences":"95"},{"option_id":"339","title":"Running","option_details":"Exercising by running in the local area. ","primary_link":"","occurrences":"95"},{"option_id":"328","title":"Watch anime","option_details":"Watch anime shows on Crunchyroll or Netflix.","primary_link":"","occurrences":"95"},{"option_id":"244","title":"Smoking ","option_details":"Smoking the good good makes you very chill and relax :3","primary_link":"","occurrences":"95"},{"option_id":"271","title":"Exercising","option_details":"","primary_link":"","occurrences":"95"}];
+            //console.log(allOptionsArray);
+            
+            
+            $(function() {
+                $.each($(".sliders"), function(index, slider) {
+                    $(slider).on("input change", function() {
+                        var value = slider.value;
+                        var badge = $(".criterionvalue[data-id='" + $(slider).data("id") + "']");
+                        var val = Math.round(value);
+                        badge.html(val);
+                        (badge.hasClass("badge-warning")) ? (badge.removeClass("badge-warning").addClass("badge-primary")) : 0;
+                        //we need these when submitting
+                        $(slider).attr("data-isused", "true");
+                        $(slider).attr("data-currentvalue", val);
+                    });
+                    
+                });
+                
+                
+            $('#searchInputDiv').search({
+                source: allOptionsArray,
+                searchFields: [
+                  'title', 'option_details'
+                ],
+                onSelect : function(a) {
+                    populateRatingPanel(a.title, a.option_details, a.option_id, a.primary_link);
+                }
+            });
+            
+            $('#searchInputDiv2').search({
+                source: allOptionsArray,
+                searchFields: [
+                  'title', 'option_details'
+                ],
+                onSelect : function(a) {
+                    var t = "This one exists already:"
+                    var b = "<br><u>" + a.title + "</u><br><br> " + a.option_details;
+                    toastr.info(b, t, {"timeOut": 25000, "closeButton": true});                    
+                },
+                error: {
+                    source: "Cannot search. No source used, and Semantic API module was not included",
+                    noResults: "Looking good! No duplicates found.",
+                    logging: "Error in debug logging, exiting.",
+                    noEndpoint: "No search endpoint was specified",
+                    noTemplate: "A valid template name was not specified.",
+                    oldSearchSyntax: "searchFullText setting has been renamed fullTextSearch for consistency, please adjust your settings.",
+                    serverError: "There was an issue querying the server.",
+                    maxResults: "Results must be an array to use maxResults setting",
+                    method: "The method you called is not defined."
+                }
+            });
+                
+                
+            });
+            // click event for submit button.
+            $("#submitValuesBtn").on("click", function f() {
+                submitRatings();
+            });
+
+            $("#resetBtn").on("click", function f() {
+                var sliders = $(".sliders");
+                sliders.each(function() {
+                    this.setAttribute("data-isused", "false");
+                    this.value = 0;
+                    
+                    var badge = $(".criterionvalue[data-id='" + $(this).data("id") + "']");
+                    badge.html("-");
+                    (badge.hasClass("badge-primary")) ? (badge.removeClass("badge-primary").addClass("badge-warning")) : 0;
+                });
+                if($("#additionalFeedback").length) {
+                    $("#additionalFeedback").val("");
+                }
+                if($("#missingCriteria").length) {
+                    $("#missingCriteria").val("");
+                }
+            });
+            // define click event on each methods
+            $("#optionslist").on("click", ".optionslistitem", function(event) {
+                event.preventDefault();
+                var title = this.innerHTML;
+                var details = $(this).next("p").html();
+                var id = $(this).data("id");
+                console.log("clicked method: ");console.log([title, details, id]);
+                if (this.hasAttribute("data-url")){
+                    // already clicked other method?.
+                    populateRatingPanel(title, details, id, this.getAttribute("data-url"));
+                    $('html, body').animate({
+                            scrollTop: $("#optionTitle").offset().top - 40
+                        }, 500);
+                } else {
+                    // newly show criteria?.
+                    populateRatingPanel(title, details, id);
+                    $('html, body').animate({
+                            scrollTop: $("#optionTitle").offset().top - 40
+                        }, 500);
+                }
+            });
+            $("#submitCriterionButton").on("click", function(event) {
+                event.preventDefault();
+                putCriterion();
+            });
+            $("#submitOptionButton").on("click", function(event) {
+                event.preventDefault();
+                putOption();
+            });
+            
+
+            //populate???
+            function populateRatingPanel(title=title, details=details, id=id, url="") {
+                $('#searchInput').val("");
+
+                var sliders = $(".sliders");
+                sliders.each(function() {
+                    this.setAttribute("data-isused", "false");
+                    this.value = 0;
+                });
+                //we are now rating option with id:
+                ratingNowOption = id;
+                //option details shown on top of the panel
+                if (url != ""){
+                    title = title + " | <a href='" + url + "' target='_blank'><i class='fa fa-external-link-alt'></i></a>";
+                }
+                $("#optionTitle").html(title);
+                $("#optionDetails").html(details);
+                $("#additionalFeedback").val("");
+                $("#missingCriteria").val("");
+                var ratingPanel = $("#ratingPanel");
+                (ratingPanel.hasClass("invisible")) ? ratingPanel.removeClass("invisible"): 0;
+                $.each($(".criterionvalue"), function(index, badge) {
+                    $(this).removeClass("badge-primary").addClass("badge-warning").html("-");
+                });
+            }
+
+            function putUser() {
+                var callURL = "../../api/postuser.php";
+                $.post(callURL, {
+                    meta_json: createMeta(),
+                    user_id: userId
+                }).done(function(data) {
+                    console.log(data); 
+                });
+
+            }
+            // submit rating function.
+            // submit each method?? - itd better if it possible to submit all.
+            function submitRatings() {
+                var sliders = $(".sliders[data-isused='true']");
+                if (sliders.length > 0) {
+                    // clear search input.
+                    $('#searchInput').val("");
+                    var ratingsArray = [[]];
+                    sliders.each(function() {
+                        //[common ID, -1, id of criterion, score]
+                        var rating = [problemId, ratingNowOption, $(this).data("id"), $(this).attr("data-currentvalue")];
+                        ratingsArray.push(rating);
+                        this.value = 0;
+                        $(this).attr("data-isused", "false");
+                        var badge = $(".criterionvalue[data-id='" + $(this).data("id") + "']");
+                        badge.html("-");
+                        if (badge.hasClass("badge-primary")) {
+                            badge.removeClass("badge-primary").addClass("badge-warning")
+                        }
+                    });
+                    ratingsArray.shift(); //kill the first empty elem.. push makes a new elem always
+                    // console.log(ratingsArray)
+
+                    // post example for python.
+                    // $('#save'.click(function(){
+                    //     y=JSON.stringfy(result);
+                    //     console.log(result)
+                    //     $.post("/save_loads",{x,y})
+                    //         .done(function(){})
+                    //         .fail(function(){alert("error");})
+                    // });
+                    var jsonEncoded = JSON.stringify(ratingsArray, null, 2);
+                    var callURL = "postrating2.py";
+                    // $.post(callURL, {
+                    //     json_ratings: jsonEncoded,
+                    //     meta: createMeta(),
+                    //     user_id: userId
+                    // })
+                    var response = {};
+                    let request = {
+                        json_ratings: jsonEncoded,
+                        meta: createMeta(),
+                        user_id: userId};
+                    // ajax transmission.
+                    $.ajax({
+                        type        : "POST",
+                        url         : "./postrating.py",
+                        data        : JSON.stringify(request),
+                        async       : false, //true:async(default), false:sync
+                        dataType    : "json",
+                        success     : function(data) {
+                            //data = JSON.parse(data);  //error
+                            response = data;
+                            console.log("ok-ajax");
+                        },
+                        error       : function(XMLHttpRequest, textStatus, errorThrown) {
+                            console.log("errror");
+                        }
+                    });
+                    console.log(response);
+
+                    console.log("ENDE");
+                    // .done(function(data) {
+                    //     //remove also from the searchable list of items
+                    //     //allOptionsArray.splice(allOptionsArray.findIndex(function(option) {
+                    //     //  return option.id == data;
+                    //     //}),1);
+                    //     //console.log(allOptionsArray);
+                    //     //$("#optionslist > [data-id='" + data + "']").remove();
+                    //     $("#optionTitle").html("Choose a technique to assess");
+                    //     $("#optionDetails").html("");
+                    //     $("#additionalFeedback").val("");
+                    //     $("#optionslist > [data-id='" + data + "']").addClass("strikeout").removeClass("text-success");
+                    //     $("#ratingPanel").addClass("invisible");
+                    //     //below, if ALL have to be done? 
+                    //     /*if ($("#optionslist > .strikeout").length == allOptionsArray.length) {
+                    //         $("#customFinalMsgCard").show();
+                    //     }*/
+                    //     $('html, body').animate({
+                    //         scrollTop: $("#optionTitle").offset().top - 40
+                    //     }, 500);
+                        
+                    //     if ($("#optionslist > .strikeout").length == 3) {
+                    //         $("#customFinalMsgCard").show();
+                    //         $('html, body').animate({
+                    //             scrollTop: $("#customFinalMsgCard").offset().top - 40
+                    //         }, 500);
+                    //         toastr.info('Thank you! You can now continue to the final stage, but feel free to keep on – your input is greatly appreciated!', {"timeOut": 25000, "closeButton": true});
+                    //     }
+                        
+                        
+                    // });
+                } else {
+                    toastr.warning('Please provide at least one rating!');
+                }
+            }
+
+            function putCriterion() {
+                var title = $("#criterionTitleInput").val();
+                if (title.length < 5) {
+                    toastr.error("Give the criterion a proper title...");
+                    return;
+                }
+                var details = $("#criterionDetailsInput").val();
+                var callURL = "postcriterion_mh.php";
+                $.post(callURL, {
+                    problem_id: problemId,
+                    user_id: userId,
+                    title: title,
+                    details: details,
+                    meta: createMeta()
+                }).done(function(data) {
+                    data = jQuery.parseJSON(data);
+                    if (data.success == "true") {
+                        toastr.success("New criterion added successfully.");
+                        $("#criterionTitleInput").val("");
+                        $("#criterionDetailsInput").val("");
+                    }
+                });
+
+            }
+
+            function putOption() {
+                var title = $("#optionTitleInput").val();
+                if (title.length < 5) {
+                    toastr.error("Give the option a proper title...");
+                    return;
+                }
+                var details = $("#optionDetailsInput").val();
+                var URL = $("#optionUrlInput").val();
+                var callURL = "postoption_mh.php"
+                $.post(callURL, {
+                    problem_id: problemId,
+                    user_id: userId,
+                    url: URL,
+                    title: title,
+                    details: details,
+                    meta: createMeta()
+                }).done(function(data) {
+                    //console.log(data);
+                    data = jQuery.parseJSON(data);
+                    if (data.success == "true") {
+                        toastr.success("New option added successfully.");
+                        $("#optionTitleInput").val("");
+                        $("#optionDetailsInput").val("");
+                        $("#optionUrlInput").val("");
+                        $('#addNewModal').modal('hide');
+
+                    }
+                });
+            }
+            
+            $("#proceedToSubmitOption").on("click", function(event) {
+                $("#addNewModalIntro").hide();
+                $("#addNewModalActual").show();
+            });
+            $("#addNewModal").on("hidden.bs.modal", function () {
+                $("#addNewModalIntro").show();
+                $("#addNewModalActual").hide();
+            });
+
+            function createMeta() {
+                var metaData = {};
+                metaData['txt_entry'] = $("#additionalFeedback").val();
+                metaData['missingCriteria'] = $("#missingCriteria").val();
+                var extras = [];
+                extras = Object.entries(extras);
+                extras.forEach(function(entry) {
+                    metaData[entry[0]] = entry[1];
+                });
+                return JSON.stringify(metaData, null, 2);
+            }
+            
+
+        </script>
+    </body>
+</html>
