@@ -33,11 +33,7 @@ def index():
             user_id: userId
         };"""
         data=request.get_data()
-        data_str=data.decode('utf-8').replace('{','').replace(' ','').replace('}','').replace('\n','')
-        data_dict={}
-        for i in data_str.split(','):
-            j=i.split(':')
-            data_dict[j[0]]=j[1]
+        data_dict=json.loads(data.decode('utf-8'))
         with open('./static/data.txt', 'a') as f:
             f.write(
                 str(data_dict["name"])+" "+
