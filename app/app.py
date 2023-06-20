@@ -1,8 +1,10 @@
-from flask import Flask, render_template,redirect,request,Blueprint,jsonify
+from flask import Flask, render_template,redirect,request,Blueprint,jsonify,url_for
 from flask_cors import CORS
 import os
+import subprocess
+import json
 
-app = Flask(__name__, static_folder="./static")
+app = Flask(__name__, static_folder="static")
 CORS(app)
 
 @app.after_request
@@ -12,40 +14,48 @@ def after_request(response):
   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
   return response
 
+# @app.route('/static/<path:filename>')
+# def serve_static(filename):
+#     with open(url_for('static',filename='data.txt'), 'w') as f:
+#         f.write("AAAAAA")
+#     return 0
+
 @app.route('/',methods=['GET','POST'])
 def index():
     if request.method == "POST":
-        # let request = {
-        #     name: $("#optionTitle")[0].innerHTML,
-        #     trust: null,
-        #     effectiveness: null,
-        #     WillingnessFriends: null,
-        #     WillingnessPublic: null,
-        #     // meta: createMeta(),
-        #     user_id: userId
-        # };
+        """let request = {
+            name: $("#optionTitle")[0].innerHTML,
+            trust: null,
+            effectiveness: null,
+            WillingnessFriends: null,
+            WillingnessPublic: null,
+            // meta: createMeta(),
+            user_id: userId
+        };"""
         data=request.get_data()
-        # BASE_DIR = os.path.dirnam(__file__)
-        # myfile = open(os.path.join(BASE_DIR,'static/sample.json'), "w")
-        # myfile.write(data)
+        data_str=data.decode('utf-8').replace('{','').replace(' ','').replace('}','').replace('\n','')
+        data_dict={}
+        for i in data_str.split(','):
+            j=i.split(':')
+            data_dict[j[0]]=j[1]
         with open('./static/data.txt', 'a') as f:
-            f.write("done")
-            # f.write(
-            #     str(data.name)+" "+
-            #     str(data.trust)+" "+
-            #     str(data.effectiveness)+" "+
-            #     str(data.WillingnessFriends)+" "+
-            #     str(data.WillingnessPublic)+" "+
-            #     str(data.user_id)+"\n")
+            f.write(
+                str(data_dict["name"])+" "+
+                str(data_dict["trust"])+" "+
+                str(data_dict["effectiveness"])+" "+
+                str(data_dict["WillingnessFriends"])+" "+
+                str(data_dict["WillingnessPublic"])+" "+
+                str(data_dict["user_id"])+"\n")
         return data 
 
     # page = request.args.get('page',1,type=int)
     # blog_posts = BlogPost.query.order_by(BlogPost.date.desc()).paginate(page=page,per_page=5)
     # return render_template('index.html',blog_posts=blog_posts)
-    return os.path.abspath('./static/data.txt')
-    with open('./static/data.txt', 'r') as f:
-        pass
+
+    # with open('./static/data.txt', 'a') as f:
+    #     f.write("done")
     return render_template('index.html')
 
 if __name__ == "__main__":
+    print (app.url_map)
     app.run()

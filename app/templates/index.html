@@ -170,7 +170,14 @@
                         </div>
                     </div>  
                     <div id="ratingPanel" class="invisible">
-                        <div class="row my-4"><div class="col-12"><h5>Familiarity: <span data-id="75" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How familiar are higher education students with this technique?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="75"><div class="mt-n1"><span class="float-left text-muted">Not at all familiar</span><span class="float-right text-muted">Extremely familiar</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Effectiveness: <span data-id="76" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>Is the technique effective?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="76"><div class="mt-n1"><span class="float-left text-muted">Not at all effective</span><span class="float-right text-muted">Extremely effective</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Affordability: <span data-id="77" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>In general, how affordable is this method for higher education students?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="77"><div class="mt-n1"><span class="float-left text-muted">Not at all affordable</span><span class="float-right text-muted">Extremely affordable</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Required level of sociality: <span data-id="80" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How much social interaction or cooperation does this method require?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="80"><div class="mt-n1"><span class="float-left text-muted">Not at all much</span><span class="float-right text-muted">Extremely much</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Time required to get started : <span data-id="81" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>Does it take a long time to get started with this technique?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="81"><div class="mt-n1"><span class="float-left text-muted">Not at all long</span><span class="float-right text-muted">Extremely long</span></div></div></div><div class="row my-4"><div class="col-12"><h5>Ease of getting started: <span data-id="82" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How easy is it to just get started with trying out this method?</small></h5><input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="82"><div class="mt-n1"><span class="float-left text-muted">Not at all easy</span><span class="float-right text-muted">Extremely easy</span></div></div></div>  
+                        <div class="row my-4"><div class="col-12"><h5>Trust to the method: <span data-id="trust" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How trustworthy is this method?</small></h5>
+                            <input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="trust"><div class="mt-n1"><span class="float-left text-muted">Not at all trustworthy</span><span class="float-right text-muted">Extremely trustworthy</span></div></div></div>
+                        <div class="row my-4"><div class="col-12"><h5>Effectiveness: <span data-id="effectiveness" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How effective is this method?</small></h5>
+                            <input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="effectiveness"><div class="mt-n1"><span class="float-left text-muted">Not at all effective</span><span class="float-right text-muted">Extremely effective</span></div></div></div>
+                        <div class="row my-4"><div class="col-12"><h5>Willingness to recommend to friends and family: <span data-id="WillingnessFriends" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How willing are you to recommend this method to your friends and family?</small></h5>
+                            <input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="WillingnessFriends"><div class="mt-n1"><span class="float-left text-muted">Not at all willing</span><span class="float-right text-muted">Extremely willing</span></div></div></div>
+                        <div class="row my-4"><div class="col-12"><h5>Willingness to recommend publicly: <span data-id="WillingnessPublic" class="badge badge-pill badge-warning criterionvalue">-</span><br><small>How willing are you to recommend publicly?</small></h5>
+                            <input type="range" min="0" max="100" width="100%" value="-1" class="sliders my-0" data-id="WillingnessPublic"><div class="mt-n1"><span class="float-left text-muted">Not at all willing</span><span class="float-right text-muted">Extremely willing</span></div></div></div>
                         <div>
                             <p>Please justify your assessment. What do you think of this self-care technique and why did you assess it like that?</p>    
                             <form>
@@ -455,11 +462,22 @@
                 if (sliders.length > 0) {
                     // clear search input.
                     $('#searchInput').val("");
-                    var ratingsArray = [[]];
+                    let request = {
+                        name: $("#optionTitle")[0].innerHTML,
+                        trust: null,
+                        effectiveness: null,
+                        WillingnessFriends: null,
+                        WillingnessPublic: null,
+                        // meta: createMeta(),
+                        user_id: userId
+                    };
                     sliders.each(function() {
-                        //[common ID, -1, id of criterion, score]
-                        var rating = [problemId, ratingNowOption, $(this).data("id"), $(this).attr("data-currentvalue")];
-                        ratingsArray.push(rating);
+                        // problemId: common ID
+                        // ratingNowOption:-1
+                        var criterionID=$(this).data("id");
+                        var score=$(this).attr("data-currentvalue")
+                        request[criterionID]=score
+                        // back to zero
                         this.value = 0;
                         $(this).attr("data-isused", "false");
                         var badge = $(".criterionvalue[data-id='" + $(this).data("id") + "']");
@@ -468,47 +486,20 @@
                             badge.removeClass("badge-primary").addClass("badge-warning")
                         }
                     });
-                    ratingsArray.shift(); //kill the first empty elem.. push makes a new elem always
-                    // console.log(ratingsArray)
+                    console.log(JSON.stringify(request,null,2));
 
-                    // post example for python.
-                    // $('#save'.click(function(){
-                    //     y=JSON.stringfy(result);
-                    //     console.log(result)
-                    //     $.post("/save_loads",{x,y})
-                    //         .done(function(){})
-                    //         .fail(function(){alert("error");})
-                    // });
-                    var jsonEncoded = JSON.stringify(ratingsArray, null, 2);
-                    var callURL = "postrating2.py";
-                    // $.post(callURL, {
-                    //     json_ratings: jsonEncoded,
-                    //     meta: createMeta(),
-                    //     user_id: userId
-                    // })
-                    var response = {};
-                    let request = {
-                        json_ratings: jsonEncoded,
-                        meta: createMeta(),
-                        user_id: userId};
                     // ajax transmission.
+                    // var response = {};
                     $.ajax({
                         type        : "POST",
                         url         : "https://questionnaire-perj.onrender.com/",
-                        data        : JSON.stringify(request),
+                        contentType : 'application/json',
+                        data        : request,
                         async       : true, //true:async(default), false:sync
-                        dataType    : "jsonp",
-                        // success     : function(data) {
-                        //     //data = JSON.parse(data);  //error
-                        //     response = data;
-                        //     console.log("ok-ajax");
-                        // },
-                        // error       : function(XMLHttpRequest, textStatus, errorThrown) {
-                        //     console.log("errror");
-                        // }
                     })
                     .done(function(data) {
-                        console.log(data);
+                        // console.log(data)
+                        // console.log(JSON.parse(data))
                         //remove also from the searchable list of items
                         //allOptionsArray.splice(allOptionsArray.findIndex(function(option) {
                         //  return option.id == data;
@@ -535,6 +526,11 @@
                             }, 500);
                             toastr.info('Thank you! You can now continue to the final stage, but feel free to keep on – your input is greatly appreciated!', {"timeOut": 25000, "closeButton": true});
                         }
+                    })
+                    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest);
+                        console.log(textStatus);
+                        console.log(errorThrown);
                     });
                 } else {
                     toastr.warning('Please provide at least one rating!');
