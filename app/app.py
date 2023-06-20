@@ -1,7 +1,7 @@
 from flask import Flask, render_template,redirect,request,Blueprint,jsonify
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 CORS(app)
 
 @app.after_request
