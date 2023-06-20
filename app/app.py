@@ -15,14 +15,30 @@ def after_request(response):
 def index():
     if request.method == "POST":
         # let request = {
-        # json_ratings: jsonEncoded,
-        # meta: createMeta(),
-        # user_id: userId};
-        return request.get_data()
+        #     name: $("#optionTitle")[0].innerHTML,
+        #     trust: null,
+        #     effectiveness: null,
+        #     WillingnessFriends: null,
+        #     WillingnessPublic: null,
+        #     // meta: createMeta(),
+        #     user_id: userId
+        # };
+        data=request.get_data()
+        with open('./static/data.txt', 'a') as f:
+            f.write(
+                str(data.name)+" "+
+                str(data.trust)+" "+
+                str(data.effectiveness)+" "+
+                str(data.WillingnessFriends)+" "+
+                str(data.WillingnessPublic)+" "+
+                str(data.user_id)+"\n")
+        return data 
 
     # page = request.args.get('page',1,type=int)
     # blog_posts = BlogPost.query.order_by(BlogPost.date.desc()).paginate(page=page,per_page=5)
     # return render_template('index.html',blog_posts=blog_posts)
+    with open('./static/Message.txt', 'r') as f:
+        pass
     return render_template('index.html')
 
 if __name__ == "__main__":
