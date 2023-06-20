@@ -1,4 +1,4 @@
-from flask import Flask, render_templater,redirect,request,Blueprint,jsonify
+from flask import Flask, render_template,redirect,request,Blueprint,jsonify
 
 app = Flask(__name__)
 
