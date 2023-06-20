@@ -38,7 +38,7 @@ def index():
     # page = request.args.get('page',1,type=int)
     # blog_posts = BlogPost.query.order_by(BlogPost.date.desc()).paginate(page=page,per_page=5)
     # return render_template('index.html',blog_posts=blog_posts)
-    with open('./static/Message.txt', 'r') as f:
+    with open('./static/data.txt', 'r') as f:
         pass
     return render_template('index.html')
 
