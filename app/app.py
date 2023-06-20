@@ -25,13 +25,14 @@ def index():
         # };
         data=request.get_data()
         with open('./static/data.txt', 'a') as f:
-            f.write(
-                str(data.name)+" "+
-                str(data.trust)+" "+
-                str(data.effectiveness)+" "+
-                str(data.WillingnessFriends)+" "+
-                str(data.WillingnessPublic)+" "+
-                str(data.user_id)+"\n")
+            f.write("done")
+            # f.write(
+            #     str(data.name)+" "+
+            #     str(data.trust)+" "+
+            #     str(data.effectiveness)+" "+
+            #     str(data.WillingnessFriends)+" "+
+            #     str(data.WillingnessPublic)+" "+
+            #     str(data.user_id)+"\n")
         return data 
 
     # page = request.args.get('page',1,type=int)
