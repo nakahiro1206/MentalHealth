@@ -2,3 +2,5 @@ Flask
 Gunicorn
 flask
 flask_cors
+google.oauth2.service_account
+gspread
