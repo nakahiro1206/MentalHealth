@@ -17,20 +17,27 @@ var balls =Array();
  * ボールクラス
  */
 class Ball{
-	constructor(x, y, r){
+	constructor(x, y, r, v){
 		this.x = x;	// x座標
 		this.y = y;	// y座標
 		this.r = r;	// 半径
+		this.v = v; // 速度.
 	}
 	draw(){
 		// 位置を計算
-		if((this.x + vec.x <= SCREEN_WIDTH - this.r) && (this.x + vec.x >= this.r)){
-			this.x += vec.x;
-		}else{this.x -= vec.x;}
-		// this.y += vec.y;
-		if((this.y + vec.y <= SCREEN_HEIGHT - this.r) && (this.y + vec.y >= this.r)){
-			this.y += vec.y;
-		}else{this.y -= vec.y;}
+		let vecX = vec.x * this.v;
+		let vecY = vec.y * this.v;
+		if(this.x + vecX <= SCREEN_WIDTH - this.r){
+			if(this.x + vecX >= this.r){
+				this.x += vecX;
+			}else{this.x = this.r;}
+		}else{this.x = SCREEN_WIDTH - this.r;}
+
+		if(this.y + vecY <= SCREEN_WIDTH - this.r){
+			if(this.y + vecY >= this.r){
+				this.y += vecY;
+			}else{this.y = this.r;}
+		}else{this.y = SCREEN_WIDTH - this.r;}
 		// 円を描画（塗りつぶし円）
 		g.beginPath();
 		g.fillStyle = "orange";
@@ -80,7 +87,7 @@ window.addEventListener("load", function(){
 	// ボールを一つ生成
 	ball = new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20);
 	for(let i =0;i<10;i++){
-		balls.push(new Ball(SCREEN_WIDTH/2+Math.random()*50, SCREEN_HEIGHT/2+Math.random()*50, 20));
+		balls.push(new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20, 0.1*i));
 	}
 	// メインループ実行
 	mainLoop();
