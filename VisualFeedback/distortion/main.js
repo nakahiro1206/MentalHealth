@@ -1,6 +1,8 @@
-// const SCREEN_WIDTH = 480;		// キャンバス幅（ピクセル）
-const SCREEN_WIDTH = window.outerWidth;
-const SCREEN_HEIGHT = window.outerHeight;// 480;	// キャンバス高さ（ピクセル）
+// const SCREEN_WIDTH = window.outerWidth; // 480;
+// const SCREEN_HEIGHT = window.outerHeight;
+
+const SCREEN_WIDTH = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+const SCREEN_HEIGHT = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 /*
  * グローバル変数
@@ -22,11 +24,11 @@ class Ball{
 	}
 	draw(){
 		// 位置を計算
-		if((this.x + vec.x <= SCREEN_WIDTH) && (this.x + vec.x >= 0)){
+		if((this.x + vec.x <= SCREEN_WIDTH - this.r) && (this.x + vec.x >= this.r)){
 			this.x += vec.x;
 		}else{this.x -= vec.x;}
 		// this.y += vec.y;
-		if((this.y + vec.y <= SCREEN_HEIGHT) && (this.y + vec.y >= 0)){
+		if((this.y + vec.y <= SCREEN_HEIGHT - this.r) && (this.y + vec.y >= this.r)){
 			this.y += vec.y;
 		}else{this.y -= vec.y;}
 		// 円を描画（塗りつぶし円）
@@ -78,7 +80,7 @@ window.addEventListener("load", function(){
 	// ボールを一つ生成
 	ball = new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20);
 	for(let i =0;i<10;i++){
-		balls.push(new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20+10*i));
+		balls.push(new Ball(SCREEN_WIDTH/2+Math.random()*50, SCREEN_HEIGHT/2+Math.random()*50, 20));
 	}
 	// メインループ実行
 	mainLoop();
