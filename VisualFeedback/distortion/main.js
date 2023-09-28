@@ -1,12 +1,6 @@
-/*
- * 端末の傾きに応じてボールを動かす
- */
-
-/*
- * 定数
- */
-const SCREEN_WIDTH = 480;		// キャンバス幅（ピクセル）
-const SCREEN_HEIGHT = 480;	// キャンバス高さ（ピクセル）
+// const SCREEN_WIDTH = 480;		// キャンバス幅（ピクセル）
+const SCREEN_WIDTH = window.outerWidth;
+const SCREEN_HEIGHT = window.outerHeight;// 480;	// キャンバス高さ（ピクセル）
 
 /*
  * グローバル変数
@@ -15,6 +9,7 @@ var canvas = null;		// キャンバス
 var g = null;				// コンテキスト
 var vec = {x: 0, y: 0 };	// 加速度センサー値格納用
 var ball = null;			// 表示するボール
+var balls =Array();
 
 /*
  * ボールクラス
@@ -27,8 +22,13 @@ class Ball{
 	}
 	draw(){
 		// 位置を計算
-		this.x += vec.x;
-		this.y += vec.y;
+		if((this.x + vec.x <= SCREEN_WIDTH) && (this.x + vec.x >= 0)){
+			this.x += vec.x;
+		}else{this.x -= vec.x;}
+		// this.y += vec.y;
+		if((this.y + vec.y <= SCREEN_HEIGHT) && (this.y + vec.y >= 0)){
+			this.y += vec.y;
+		}else{this.y -= vec.y;}
 		// 円を描画（塗りつぶし円）
 		g.beginPath();
 		g.fillStyle = "orange";
@@ -47,6 +47,9 @@ function mainLoop(){
 
 	// ボールを描く
 	ball.draw();
+	balls.forEach(element => {
+		element.draw();
+	});
 
 	// 再帰呼び出し
 	requestAnimationFrame(mainLoop);
@@ -56,8 +59,8 @@ function mainLoop(){
  * 加速度センサーの値を取得
  */
 window.addEventListener("deviceorientation", function(e){
-	vec.x = e.gamma / 5;	// x方向の移動量: そのままでは大きい為、小さくする
-	vec.y = e.beta / 5;		// y方向の移動量:         〃
+	vec.x = e.gamma / 10;	// x方向の移動量: そのままでは大きい為、小さくする
+	vec.y = e.beta / 10;		// y方向の移動量:         〃
 }, false);
 
 /*
@@ -74,7 +77,9 @@ window.addEventListener("load", function(){
 
 	// ボールを一つ生成
 	ball = new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20);
-
+	for(let i =0;i<10;i++){
+		balls.push(new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20+10*i));
+	}
 	// メインループ実行
 	mainLoop();
 });
