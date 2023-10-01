@@ -90,27 +90,29 @@ window.addEventListener("load", function(){
 	const rectX = 50; const rectY = 50;
 	const rectWidth = 200; const rectHeight = 100;
 	start_g.fillRect(50, 50, 200, 100);
-	start_canvas.addEventListener("click", function(event) {
-		var rect = start_canvas.getBoundingClientRect();
-		var clickX = event.clientX - rect.left;
-		var clickY = event.clientY - rect.top;
-		if (clickX >= rectX && clickX <= rectX + rectWidth &&
-			clickY >= rectY && clickY <= rectY + rectHeight) {
-			start_g.clearRect(0, 0, start_canvas.width, start_canvas.height);
-		}
-	});
+	// start_canvas.addEventListener("click", function(event) {
+	// 	var rect = start_canvas.getBoundingClientRect();
+	// 	var clickX = event.clientX - rect.left;
+	// 	var clickY = event.clientY - rect.top;
+	// 	if (clickX >= rectX && clickX <= rectX + rectWidth &&
+	// 		clickY >= rectY && clickY <= rectY + rectHeight) {
+	// 		start_g.clearRect(0, 0, start_canvas.width, start_canvas.height);
+	// 	}
+	// });
 
 	const button = document.getElementById("btn");
-	button.addEventListener("click", function() {
-		button.style.display="none";
-		start_g.clearRect(0, 0, start_canvas.width, start_canvas.height);
-	});
 
-	// ボールを一つ生成
+	// ボールを生成
 	for(let i =0;i<10;i++){
 		balls.push(new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20, 0.1*i));
 	}
 	DrawBalls();
+
+	button.addEventListener("click", function() {
+		button.style.display="none";
+		start_g.clearRect(0, 0, start_canvas.width, start_canvas.height);
+		mainLoop();
+	});
 });
 
 
