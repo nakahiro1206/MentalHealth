@@ -6,9 +6,27 @@
 	<meta name="viewport" content="user-scalable=yes">
 	<title>DISTORTION MODEL</title>
 	<script src="main.js" type="text/javascript"></script>
-	<style>*{margin:0; padding:0;}</style>
+	<style>
+		*{margin:0; padding:0;}
+		#btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #0074d9;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+			z-index: 2;
+        }
+	</style>
 </head>
 <body>
-	<canvas id="canvas" width="" height=""></canvas>
+	<div id="wrapper">
+		<canvas id="canvas" width="" height=""></canvas>
+		<canvas id="start_canvas" width="" height=""></canvas>
+		<button id="btn">Click me!</button>
+	</div>
 </body>
 </html>
