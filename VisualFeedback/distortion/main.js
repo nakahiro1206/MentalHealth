@@ -29,12 +29,13 @@ class Ball{
 		this.y = y;	// y座標
 		this.r = r;	// 半径
 		this.v = v; // 速度.
+		// color info.
 	}
 	draw(){
 		// 位置を計算
-		let vecX = vec.x * this.v;
-		let vecY = vec.y * this.v;
-		this.v -= Math.sqrt(vecX * vecX + vecY * vecY) * 0.1;
+		const vecX = vec.x * this.v;
+		const vecY = vec.y * this.v;
+		this.v -= Math.sqrt(vecX * vecX + vecY * vecY) * 0.001;
 		if(this.v < 0){this.v = 0;};
 		if(this.x + vecX <= SCREEN_WIDTH - this.r){
 			if(this.x + vecX >= this.r){
@@ -57,6 +58,7 @@ class Ball{
 
 function DrawBalls(){
 	// frameごとに速度減衰; 時間爆発的に; activeなframe, activeなink ballだけ動かす. dead canvasとか作る;
+	// 粒子を一つにして、それに軌跡を与える方が自然かも.
 	// 画面クリア
 	g.fillStyle = "#ddd";
 	g.fillRect(0, 0, canvas.width, canvas.height);
@@ -99,6 +101,28 @@ window.addEventListener("load", function(){
 		balls.push(new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20, 0.1*i));
 	}
 	DrawBalls();
+	// text
+	g.font = '50px Roboto medium';
+	g.fillText('Artis', 50, 50);
+	const img = g.getImageData(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+	for(let i=0;i<SCREEN_HEIGHT;i++){
+		for(let j=0;j<SCREEN_WIDTH;j++){
+			// i represents height, j width. 0 ~ 255.
+			// alpha
+			let alpha = img.data[3 + j * 4 + i * SCREEN_WIDTH * 4];
+			// red
+			let red = img.data[j * 4 + i * SCREEN_WIDTH * 4];
+			// green
+			let green = img.data[1 + j * 4 + i * SCREEN_WIDTH * 4];
+			// blue
+			let blue = img.data[2 + j * 4 + i * SCREEN_WIDTH * 4];
+			if(red==0 && green==0 && blue==0){
+				// generate ball
+				balls.push(new Ball(j, i, 5, 0.1));	
+			}		
+		}
+	}
+	DrawBalls();
 
 	// click event.
 	button.addEventListener("click", function() {
@@ -107,14 +131,3 @@ window.addEventListener("load", function(){
 		mainLoop();
 	});
 });
-
-
-// window.addEventListener("click", function(){
-// 	// ボールを一つ生成
-// 	for(let i =0;i<10;i++){
-// 		balls.push(new Ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 20, 0.1*i));
-// 	}
-// 	DrawBalls();
-// 	// メインループ実行
-// 	// mainLoop();
-// });

@@ -1,0 +1,6 @@
+Flask
+Gunicorn
+flask
+flask_cors
+google
+gspread
