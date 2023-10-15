@@ -54,7 +54,7 @@ class Ball{
 
 		// ink を距離に比例して減らす.
 		const diffX = this.x - tmpX; const diffY = this.y - tmpY;
-		this.ink -= Math.sqrt(diffX*diffX + diffY*diffY) * 0.01;
+		this.ink -= Math.sqrt(diffX*diffX + diffY*diffY) * 0.0001;
 		if(this.ink < 0){this.ink = 0;};
 
 		// 円を描画（塗りつぶし円）
@@ -99,9 +99,10 @@ let requestID;
 function mainLoop(){
 	const flag = DrawBalls();
 	// 再帰呼び出し
-	if(flag){
+	if(flag == true){
 		requestID = requestAnimationFrame(mainLoop);
 	}
+	else{cancelAnimationFrame(requestID);}
 }
 
 /*起動処理*/
@@ -145,13 +146,14 @@ window.addEventListener("load", function(){
 				if(alpha!=0){
 					// if color is not transparent.
 					// generate ball
-					balls.push(new Ball(j, i, 1, 10, [red,green,blue,alpha]));	
+					// sin wave.
+					const ink = 10 + 10 * Math.sin(i+j);
+					balls.push(new Ball(j, i, 1, ink, [red,green,blue,alpha]));	
 				}		
 			}
 		}
 		DrawBalls();
 		mainLoop();
-		cancelAnimationFrame(requestID);
 		console.log("exit animation");
 		// exit button.
 	});
