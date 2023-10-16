@@ -1,6 +1,7 @@
 // height, width
 const SCREEN_WIDTH = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 const SCREEN_HEIGHT = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+console.log(SCREEN_HEIGHT * SCREEN_WIDTH);
 
 // wrapper
 const wrapper = document.getElementById("wrapper");
@@ -15,6 +16,7 @@ const start_canvas = document.getElementById("start_canvas");
 const start_g = start_canvas.getContext("2d");
 // button
 const button = document.getElementById("btn");
+const exit_button = document.getElementById("exit_btn");
 
 // orientation
 const vec = {x: 0, y: 0 };
@@ -54,7 +56,7 @@ class Ball{
 
 		// ink を距離に比例して減らす.
 		const diffX = this.x - tmpX; const diffY = this.y - tmpY;
-		this.ink -= Math.sqrt(diffX*diffX + diffY*diffY) * 0.0001;
+		this.ink -= Math.sqrt(diffX*diffX + diffY*diffY) / 10;
 		if(this.ink < 0){this.ink = 0;};
 
 		// 円を描画（塗りつぶし円）
@@ -71,10 +73,18 @@ function DrawText(){
 	// 背景.
 	// g.fillStyle = "white";
 	// g.fillRect(0, 0, canvas.width, canvas.height);
-
+	
+	const text = "Alice's Adventure in Wonderland\nNightmare before Christmas";
 	g.fillStyle = "green"; g.font = '50px Roboto medium';
-	const text = "Alice's Adventure in Wonderland Nightmare before Christmas"
-	g.fillText(text, 50, 50);
+	const fontSize = 50; const lineHeight = 1.5;
+	const lines = text.split("\n");
+	for(let i=0; i<lines.length; i++ ){
+		const line = lines[i] ;
+		let addY=fontSize;
+		if (i!=0){addY += fontSize * lineHeight * i ;}
+		g.fillText( line, 100, 100 + addY ) ;
+	}
+	// g.fillText(text, 50, 50);
 }
 
 function DrawBalls(){
@@ -98,11 +108,16 @@ function DrawBalls(){
 let requestID;
 function mainLoop(){
 	const flag = DrawBalls();
+	// console.log("DrawBall end");
+	// console.log(flag);
 	// 再帰呼び出し
 	if(flag == true){
 		requestID = requestAnimationFrame(mainLoop);
 	}
-	else{cancelAnimationFrame(requestID);}
+	else{
+		cancelAnimationFrame(requestID);
+		exit_button.style.display="block";
+	}
 }
 
 /*起動処理*/
@@ -154,6 +169,7 @@ window.addEventListener("load", function(){
 		}
 		DrawBalls();
 		mainLoop();
+		// 先に実行されるっぽい. let で終了コードを準備.
 		console.log("exit animation");
 		// exit button.
 	});
