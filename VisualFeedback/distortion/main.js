@@ -21,8 +21,8 @@ const exit_button = document.getElementById("exit_btn");
 // orientation
 const vec = {x: 0, y: 0 };
 window.addEventListener("deviceorientation", function(e){
-	vec.x = e.gamma / 10;	// x方向の移動量: そのままでは大きい為、小さくする
-	vec.y = e.beta / 10;		// y方向の移動量:         〃
+	vec.x = e.gamma / 20;	// x方向の移動量: そのままでは大きい為、小さくする
+	vec.y = e.beta / 20;		// y方向の移動量:         〃
 }, false);
 
 // balls array
@@ -56,7 +56,7 @@ class Ball{
 
 		// ink を距離に比例して減らす.
 		const diffX = this.x - tmpX; const diffY = this.y - tmpY;
-		this.ink -= Math.sqrt(diffX*diffX + diffY*diffY) / 10;
+		this.ink -= Math.sqrt(diffX*diffX + diffY*diffY);
 		if(this.ink < 0){this.ink = 0;};
 
 		// 円を描画（塗りつぶし円）
@@ -88,18 +88,19 @@ function DrawText(){
 	// g.fillText(text, 50, 50);
 }
 
-function DrawBalls(){
+function DrawBalls(drawLimit){
 	// frameごとに速度減衰; 時間爆発的に; activeなframe, activeなink ballだけ動かす. dead canvasとか作る;
 	// 粒子を一つにして、それに軌跡を与える方が自然かも.
 	// ボールを描く
 	let cnt=0;
-	balls.forEach(element => {
-		const flag = element.draw();
-		if(flag == false){
+	for(let i=0;i<drawLimit;i++){
+		const index = Math.floor(Math.random()*(balls.length));
+		const flag = balls[index].draw();
+		if(flag==false){
 			cnt++;
 		}
-	});
-	if(cnt == balls.length){
+	}
+	if(cnt == drawLimit){
 		return false;
 	}
 	return true;
@@ -108,7 +109,7 @@ function DrawBalls(){
 /*ゲームループ*/
 let requestID;
 function mainLoop(){
-	const flag = DrawBalls();
+	const flag = DrawBalls(5000);
 	// console.log("DrawBall end");
 	// console.log(flag);
 	// 再帰呼び出し
@@ -163,12 +164,12 @@ window.addEventListener("load", function(){
 					// if color is not transparent.
 					// generate ball
 					// sin wave.
-					const ink = 10 + 10 * Math.sin((i+j)/100);
+					const ink = 100 + 100 * Math.sin((i+j)/100);
 					balls.push(new Ball(j, i, 1, ink, [red,green,blue,alpha]));	
 				}		
 			}
 		}
-		DrawBalls();
+		DrawBalls(balls.length);
 		mainLoop();
 		// 先に実行されるっぽい. let で終了コードを準備.
 		console.log("exit animation");
