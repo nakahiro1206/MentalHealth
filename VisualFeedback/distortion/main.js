@@ -60,11 +60,12 @@ class Ball{
 		if(this.ink < 0){this.ink = 0;};
 
 		// 円を描画（塗りつぶし円）
-		g.beginPath();
 		const [red, green, blue, alpha] = this.color;
 		g.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
-		g.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
-		g.fill();
+		g.beginPath();
+		g.fillRect(this.x, this.y, 1, 1);
+		// g.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
+		// g.fill();
 		return true;
 	};
 };
@@ -82,7 +83,7 @@ function DrawText(){
 		const line = lines[i] ;
 		let addY=fontSize;
 		if (i!=0){addY += fontSize * lineHeight * i ;}
-		g.fillText( line, 100, 100 + addY ) ;
+		g.fillText( line, 100, 100 + addY, SCREEN_WIDTH-100) ;
 	}
 	// g.fillText(text, 50, 50);
 }
@@ -162,7 +163,7 @@ window.addEventListener("load", function(){
 					// if color is not transparent.
 					// generate ball
 					// sin wave.
-					const ink = 10 + 10 * Math.sin(i+j);
+					const ink = 10 + 10 * Math.sin((i+j)/100);
 					balls.push(new Ball(j, i, 1, ink, [red,green,blue,alpha]));	
 				}		
 			}
