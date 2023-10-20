@@ -65,9 +65,10 @@ def index():
             return data
     
     elif(request.method == "GET"):
-        all_methods=spreadsheet.worksheet("methods").get_all_values()
-        random.shuffle(all_methods)
-        return all_methods
+        # all_methods=spreadsheet.worksheet("methods").get_all_values()
+        # random.shuffle(all_methods)
+        # return all_methods
+        return render_template('index.html')
     
     else: return render_template('index.html')
 
