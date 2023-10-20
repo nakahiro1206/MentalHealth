@@ -5,7 +5,7 @@ from google.oauth2.service_account import Credentials
 import gspread
 import random
 
-app = Flask(__name__, static_folder="static", template_folder='templates')
+app = Flask(__name__, static_folder="static", template_folder="templates")
 # CORS(app)
 
 @app.after_request
@@ -74,4 +74,4 @@ def index():
 
 if __name__ == "__main__":
     print (app.url_map)
-    app.run()
+    app.run(debug=True)
