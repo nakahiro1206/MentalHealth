@@ -27,7 +27,7 @@ def index():
         scopes=scopes
     )
     gc = gspread.authorize(credentials)
-    spreadsheet_url = "https://docs.google.com/spreadsheets/d/1dXK8ix7_0_988-hzUX_BQbJd6mJeLiS5Ccd_81Ohndk"
+    spreadsheet_url = "https://docs.google.com/spreadsheets/d/17gEfTOPkqb916jOX2YwETBWtvgX_0XU7MtV3xuZutP0/edit?usp=sharing"
     spreadsheet = gc.open_by_url(spreadsheet_url)
 
     if request.method == "POST":
