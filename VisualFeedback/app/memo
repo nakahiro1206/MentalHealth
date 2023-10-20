@@ -16,3 +16,7 @@ render.com
 - root directory: ./VisualFeedback/app/
 - Build command: python3 -m pip install -r requirements.txt
 - Start command: gunicorn app:app
+
+directory name
+- jinja2.exceptions.TemplateNotFound: index.html
+  clear cache and build from scratch.
