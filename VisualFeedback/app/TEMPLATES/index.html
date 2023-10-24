@@ -8,33 +8,20 @@
 
         <!-- Bootstrap core CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .form-signin {
+            max-width: 330px;
+            padding: 1rem;
+            }
+        </style>
     </head>
     <body class="bg-faded">
-        <!-- header  -->
-        <section>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card my-2">
-                            <div class="card-body">
-                                <h4 class="card-titlet text-center">Now, please assess mental health self-care techniques.</h4>
-                                <p class="card-text text-center">The techniques below have been contributed by participants just like you. Assess at least three to move on to the final stage.</p>
-                            </div>
-                        </div>
-                        <!-- Section to guide to end.php -->
-                        <div id="customFinalMsgCard" class="card my-2 initiallyhidden">
-                            <div class="card-body">
-                                <h2 class="card-title text-success text-center" id="customFinalMsgTitle">Continue to the final stage!</h2>
-                                <p id="customFinalMsgBody" class="card-text font-italic text-center "><a href="https://ab3000.net/campaigns/mh/end.php">Proceed to the final stage of the study by clicking here</a>.<br><br>However, we also encourage you to continue assessing techniques, or to provide your own technique(s). It will help the community and our research.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Bootstrap core JavaScript -->
-
-        <script>
+        <main class="form-signin w-100 m-auto">
+            <form action="/signin" method="get">
+                <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+            </form>
+        </main>
+        <!-- <script>
             // const applicationURL="https://questionnaire-perj.onrender.com";
             const applicationURL="http://127.0.0.1:5000";        
             $.get(applicationURL)
@@ -60,6 +47,6 @@
                     console.log(errorThrown);
                 });
             })
-        </script>
+        </script> -->
     </body>
 </html>

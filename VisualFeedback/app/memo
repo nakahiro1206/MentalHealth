@@ -19,4 +19,7 @@ render.com
 
 directory name
 - jinja2.exceptions.TemplateNotFound: index.html
+  you shouldnt change folder name by GUI. it is not reflected to github's display name.
   clear cache and build from scratch.
+
+https://visualfeedback.onrender.com
