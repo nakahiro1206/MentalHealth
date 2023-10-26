@@ -10,8 +10,11 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .form-signin {
-            max-width: 75%;
+            max-width: 90%;
             padding: 1rem;
+            }
+            textarea {
+            resize: none;
             }
         </style>
     </head>
@@ -19,13 +22,13 @@
         <main class="form-signin w-100 m-auto">
             <form action="/pre-eval" method="post">
                     <label for="Input" class="form-label">put your any thoughts into words.</label>
-                    <textarea class="form-control mb-3" id="Input" rows="10" placeholder="shut the fuck up" name="disclosure"></textarea>
+                    <textarea class="form-control mb-3" id="Input" rows="10" placeholder="put your any thoughts into words." name="disclosure"></textarea>
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col">
                                 <button type="reset" class="btn btn-danger" onclick="document.getElementById('Input').value = ''">Reset</button>
                             </div>
-                            <div class="col-md-6 text-end">
+                            <div class="col text-end">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>

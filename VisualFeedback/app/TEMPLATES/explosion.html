@@ -2,12 +2,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="user-scalable=yes">
-	<title>DISTORTION MODEL</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>VISUAL_FEEDBACK</title>
+    <meta name="description" content="tendency of visual feedback choice">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<style>
-		*{margin:0; padding:0;}
-		.btn {
+        .form-explosion {
+            max-width: 90%;
+            padding: 1rem;
+            height: 100vh;
+        }
+		/* .btn {
             position: absolute;
             top: 10px;
             left: 10px;
@@ -19,12 +27,16 @@
             cursor: pointer;
 			z-index: 2;
             display: none;
-        }
+        } */
         .particle{
             width: 1px;
             height: 1px;
             animation-fill-mode: both;
+			transition: all 1s ease;
             /* animation: pop 1s reverse forwards;*/ /* required */
+        }
+        .opaque{
+            opacity: 0;
         }
         @keyframes pop {
         from {
@@ -39,16 +51,21 @@
 	</style>
 </head>
 <body>
-	<div id="wrapper">
-		<canvas id="canvas" width="" height=""></canvas>
-        <div id="particles_wrapper"></div>
-		<canvas id="start_canvas" width="" height=""></canvas>
-		<button id="start_btn" class="btn">Click me!</button>
-		<button id="exit_btn" class="btn">Exit!</button>
-	</div>
+    <div class="form-explosion m-auto">
+        <h3 class="md-3">tap screen and explode the letters!</h3>
+        <div id="wrapper" class="border border-3 h-75 m-auto">
+            <canvas id="canvas" class="w-100 h-100"></canvas>
+            <div id="particles_wrapper" class="w-100 h-100" style="display: none;"></div>
+        </div>
+        <div class="row mt-3 m-auto">
+            <div class="col"><button id="start_btn" class="btn btn-success" onclick="document.getElementById('start_btn').disabled=true;">Click me!</button></div>
+            <div class="col text-end"><button id="exit_btn" class="btn btn-secondary">Exit!</button></div>
+        </div>
     <script>
         const Text = {{text|tojson}};
     </script>
+    <!-- ラグがひどい -->
 	<script src="./static/src/explosion.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
