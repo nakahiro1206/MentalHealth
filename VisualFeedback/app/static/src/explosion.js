@@ -35,9 +35,9 @@ function DrawText(){
 	// 背景.
 	// g.fillStyle = "white";
 	// g.fillRect(0, 0, canvas.width, canvas.height);
-	g.fillStyle = "green"; 
-	g.font = '50px Roboto medium';
-	const fontSize = 50; const lineHeight = 1.5;
+	g.fillStyle = "black"; 
+	g.font = '20px Roboto medium';
+	const fontSize = 20; const lineHeight = 1.5;
 	const lines = Text.split("\n");
 	for(let i=0; i<lines.length; i++ ){
 		const line = lines[i] ;

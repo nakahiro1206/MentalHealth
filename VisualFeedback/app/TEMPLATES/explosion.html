@@ -57,10 +57,10 @@
             <canvas id="canvas" class="w-100 h-100"></canvas>
             <div id="particles_wrapper" class="w-100 h-100" style="display: none;"></div>
         </div>
-        <div class="row mt-3 m-auto">
+        <form class="row mt-3 m-auto" action="/post-eval" method="get">
             <div class="col"><button id="start_btn" class="btn btn-success" onclick="document.getElementById('start_btn').disabled=true;">Click me!</button></div>
-            <div class="col text-end"><button id="exit_btn" class="btn btn-secondary">Exit!</button></div>
-        </div>
+            <div class="col text-end"><button id="exit_btn" class="btn btn-secondary" type="submit">Exit!</button></div>
+        </form>
     <script>
         const Text = {{text|tojson}};
     </script>
