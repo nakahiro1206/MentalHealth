@@ -39,11 +39,24 @@ function DrawText(){
 	g.font = '20px Roboto medium';
 	const fontSize = 20; const lineHeight = 1.5;
 	const lines = Text.split("\n");
-	for(let i=0; i<lines.length; i++ ){
-		const line = lines[i] ;
-		let addY=fontSize;
-		if (i!=0){addY += fontSize * lineHeight * i ;}
-		g.fillText( line, 0, 0 + addY, WRAPPER_WIDTH) ;
+
+	let TextY=fontSize;
+	for(let i=0; i<lines.length; i++){
+		let TextX=0;
+		const line = lines[i];
+		if (i!=0){TextY += fontSize * lineHeight;}
+		for(let j=0;j<line.length;j++){
+			const value = line[j];
+			console.log(value);
+			const textWidth = g.measureText(value).width;
+			if(TextX + textWidth > WRAPPER_WIDTH){
+				TextY += fontSize * lineHeight;
+				TextX = 0;
+			}
+			console.log([value, TextX, TextY]);
+			g.fillText(value, TextX, TextY);
+			TextX += textWidth;
+		}
 	}
 }
 
