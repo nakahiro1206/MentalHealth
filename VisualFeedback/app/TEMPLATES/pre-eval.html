@@ -34,22 +34,27 @@
                         <span class ="col text-end">extremely high</span>
                     </div>
                 </label>
-                <div class="w-100 d-flex justify-content-between mb-3">
-                    <span><input class="form-check-input" type="radio" name="q1" value="0"></span>
-                    <span><input class="form-check-input" type="radio" name="q1" value="1""></span>
-                    <span><input class="form-check-input" type="radio" name="q1" value="2"></span>
-                    <span><input class="form-check-input" type="radio" name="q1" value="3"></span>
-                    <span><input class="form-check-input" type="radio" name="q1" value="4"></span>
-                    <span><input class="form-check-input" type="radio" name="q1" value="5"></span>
-                    <span><input class="form-check-input" type="radio" name="q1" value="6"></span>
+                <div class="input-group has-validation">
+                    <div class="w-100 d-flex justify-content-between mb-3">
+                        <span><input class="form-check-input" type="radio" name="q1" value="0"></span>
+                        <span><input class="form-check-input" type="radio" name="q1" value="1""></span>
+                        <span><input class="form-check-input" type="radio" name="q1" value="2"></span>
+                        <span><input class="form-check-input" type="radio" name="q1" value="3"></span>
+                        <span><input class="form-check-input" type="radio" name="q1" value="4"></span>
+                        <span><input class="form-check-input" type="radio" name="q1" value="5"></span>
+                        <span><input class="form-check-input" type="radio" name="q1" value="6"></span>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please choose a username.
+                    </div>
                 </div>
                 
                 <!-- Q2 -->
                 <label for="q2" class="form-label w-100">
-                    <h4>Q2: how much control over the stress do you have? / how difficult do you feel to resolve it?</h4>
+                    <h4>Q2: how difficult do you feel to resolve it?</h4>
                     <div class="row mt-3">
-                        <span class ="col">extremely low</span>
-                        <span class ="col text-end">extremely high</span>
+                        <span class ="col">extremely easy</span>
+                        <span class ="col text-end">extremely difficult</span>
                     </div>
                 </label>
                 <div class="w-100 d-flex justify-content-between mb-3">
@@ -81,10 +86,16 @@
                 </div>
 
                 <h3>2. categorize your emotion</h3>
+                Classify your emotion into 3 dimensions! This is English version.
                 <div class="mt-3 w-75 m-auto">
                     <select name="primary-emotion" class="form-select mb-3" id="primary-emotion"></select>
                     <select name="secondary-emotion" class="form-select mb-3" id="secondary-emotion"></select>
                     <select name="tertiary-emotion" class="form-select mb-3" id="tertiary-emotion"></select>
+                </div>
+                感情を二段階で分類してみましょう。日本語版です。
+                <div class="mt-3 w-75 m-auto">
+                    <select name="primary-emotion2" class="form-select mb-3" id="primary-emotion2"></select>
+                    <select name="secondary-emotion2" class="form-select mb-3" id="secondary-emotion2"></select>
                 </div>
 
                 <!-- 3. visual feedback choice -->

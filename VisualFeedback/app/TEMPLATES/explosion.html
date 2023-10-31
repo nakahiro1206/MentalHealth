@@ -15,38 +15,15 @@
             padding: 1rem;
             height: 100vh;
         }
-		/* .btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #0074d9;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-			z-index: 2;
-            display: none;
-        } */
         .particle{
             width: 1px;
             height: 1px;
             animation-fill-mode: both;
-			transition: all 1s ease;
+			transition: all 2s ease;
             /* animation: pop 1s reverse forwards;*/ /* required */
         }
         .opaque{
             opacity: 0;
-        }
-        @keyframes pop {
-        from {
-            opacity: 0;
-        }
-        to {
-            top: 50%;
-            left: 50%;
-            opacity: 1;
-        }
         }
 	</style>
 </head>
@@ -58,7 +35,7 @@
             <div id="particles_wrapper" class="w-100 h-100" style="display: none;"></div>
         </div>
         <form class="row mt-3 m-auto" action="/post-eval" method="get">
-            <div class="col"><button id="start_btn" class="btn btn-success" onclick="document.getElementById('start_btn').disabled=true;">Click me!</button></div>
+            <div class="col"><button id="start_btn" class="btn btn-success" onclick="document.getElementById('start_btn').disabled=true;">Click to start!</button></div>
             <div class="col text-end"><button id="exit_btn" class="btn btn-secondary" type="submit">Exit!</button></div>
         </form>
     <script>

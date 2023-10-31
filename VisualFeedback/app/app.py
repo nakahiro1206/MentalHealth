@@ -112,6 +112,7 @@ def disclosure():
 def preEval():
     if(request.method =="POST"):
         session["disclosure"] = request.form["disclosure"]
+        print(request.form["disclosure"])
         if 'username' in session:
             return render_template('pre-eval.html')
         else:
@@ -135,14 +136,19 @@ def feedback():
             session["emotion_primary"] = request.form["primary-emotion"];
             session["emotion_secondary"] = request.form["secondary-emotion"];
             session["emotion_tertiary"] = request.form["tertiary-emotion"];
+
+
+            session["emotion_primary2"] = request.form["primary-emotion2"];
+            session["emotion_secondary2"] = request.form["secondary-emotion2"];
+            
             fb_choice = request.form["fb"];
             session["fb_choice"] = fb_choice;
 
             if(fb_choice == "explosion"): return render_template('explosion.html', text=session['disclosure'])
-            elif(fb_choice == "distortion"): return render_template('explosion.html', text=session['disclosure'])
-            elif(fb_choice == "distancing"): return render_template('explosion.html', text=session['disclosure'])
+            elif(fb_choice == "distortion"): return render_template('distortion.html', text=session['disclosure'])
+            elif(fb_choice == "distancing"): return render_template('breathing.html')
             elif(fb_choice == "distraction"): return render_template('explosion.html', text=session['disclosure'])
-            elif(fb_choice == "none"): return render_template('explosion.html', text=session['disclosure'])
+            elif(fb_choice == "none"): return redirect(url_for('postEval'))
             else: return redirect(url_for('signin'))
         else: return redirect(url_for('signin'))
     else:
@@ -164,4 +170,4 @@ def goHome():
 
 if __name__ == "__main__":
     # print (app.url_map)
-    app.run(debug=True, port=2000)
+    app.run(debug=True)

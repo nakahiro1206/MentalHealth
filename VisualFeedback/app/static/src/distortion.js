@@ -1,28 +1,23 @@
 // height, width
 const SCREEN_WIDTH = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 const SCREEN_HEIGHT = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-console.log(SCREEN_HEIGHT * SCREEN_WIDTH);
+const WRAPPER_WIDTH = document.getElementById("wrapper").clientWidth;
+const WRAPPER_HEIGHT = document.getElementById("wrapper").clientHeight;
 
-// wrapper
-const wrapper = document.getElementById("wrapper");
 // canvas which draws ball
 const canvas = document.getElementById("canvas");
 const g = canvas.getContext("2d"); // ctx means context
-// dead canvas which draw fixed ball
-const dead_canvas = document.getElementById("canvas_dead");
-const dead_g = dead_canvas.getContext("2d"); // ctx means context
-// start menu
-const start_canvas = document.getElementById("start_canvas");
-const start_g = start_canvas.getContext("2d");
+// wrapper
+const wrapper = document.getElementById("wrapper");
 // button
-const button = document.getElementById("btn");
+const button = document.getElementById("start_btn");
 const exit_button = document.getElementById("exit_btn");
 
 // orientation
 const vec = {x: 0, y: 0 };
 window.addEventListener("deviceorientation", function(e){
 	vec.x = e.gamma / 20;	// x方向の移動量: そのままでは大きい為、小さくする
-	vec.y = e.beta / 20;		// y方向の移動量:         〃
+	vec.y = e.beta / 20;		// y方向の移動量: そのままでは大きい為、小さくする.
 }, false);
 
 // balls array
@@ -64,31 +59,37 @@ class Ball{
 		g.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 		g.beginPath();
 		g.fillRect(this.x, this.y, 1, 1);
-		// g.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
-		// g.fill();
 		return true;
 	};
 };
 
 function DrawText(){
-	// 背景.
-	// g.fillStyle = "white";
-	// g.fillRect(0, 0, canvas.width, canvas.height);
-	
-	const text = "Alice's Adventure in Wonderland\nNightmare before Christmas";
-	g.fillStyle = "green"; g.font = '50px Roboto medium';
-	const fontSize = 50; const lineHeight = 1.5;
-	const lines = text.split("\n");
-	for(let i=0; i<lines.length; i++ ){
-		const line = lines[i] ;
-		let addY=fontSize;
-		if (i!=0){addY += fontSize * lineHeight * i ;}
-		g.fillText( line, 100, 100 + addY, SCREEN_WIDTH-100) ;
+	g.fillStyle = "black"; 
+	g.font = '20px Roboto medium';
+	const fontSize = 20; const lineHeight = 1;
+	const lines = Text.split("\n");
+
+	let TextY=fontSize;
+	for(let i=0; i<lines.length; i++){
+		let TextX=0;
+		const line = lines[i];
+		if (i!=0){TextY += fontSize * lineHeight;}
+		for(let j=0;j<line.length;j++){
+			const value = line[j];
+			const textWidth = g.measureText(value).width;
+			if(TextX + textWidth > WRAPPER_WIDTH){
+				TextY += fontSize * lineHeight;
+				TextX = 0;
+			}
+			console.log([value, TextX, TextY, textWidth, WRAPPER_WIDTH]);
+			g.fillText(value, TextX, TextY);
+			TextX += textWidth;
+		}
 	}
-	// g.fillText(text, 50, 50);
 }
 
-function DrawBalls(drawLimit){
+function DrawBalls(){
+	const drawLimit = 5000;
 	// frameごとに速度減衰; 時間爆発的に; activeなframe, activeなink ballだけ動かす. dead canvasとか作る;
 	// 粒子を一つにして、それに軌跡を与える方が自然かも.
 	// ボールを描く
@@ -100,7 +101,7 @@ function DrawBalls(drawLimit){
 			cnt++;
 		}
 	}
-	if(cnt == drawLimit){
+	if(cnt > 0){
 		return false;
 	}
 	return true;
@@ -109,51 +110,22 @@ function DrawBalls(drawLimit){
 /*ゲームループ*/
 let requestID;
 function mainLoop(){
-	const flag = DrawBalls(5000);
-	// console.log("DrawBall end");
-	// console.log(flag);
+	const flag = DrawBalls();
 	// 再帰呼び出し
 	if(flag == true){
 		requestID = requestAnimationFrame(mainLoop);
 	}
 	else{
 		cancelAnimationFrame(requestID);
-		exit_button.style.display="block";
 	}
 }
 
 /*起動処理*/
 window.addEventListener("load", function(){
-	// wrapper
-	wrapper.style.position="relative";
-	// start menu
-	start_canvas.width=SCREEN_WIDTH;start_canvas.height=SCREEN_HEIGHT;
-	start_canvas.style.position="absolute";
-	start_canvas.style.zIndex = 2;
-
-	// canvas
-	canvas.width = SCREEN_WIDTH; canvas.height = SCREEN_HEIGHT;
-	canvas.style.position="absolute";
-	canvas.style.zIndex = 1;
-
-	// canvas
-	dead_canvas.width = SCREEN_WIDTH; canvas.height = SCREEN_HEIGHT;
-	dead_canvas.style.position="absolute";
-	dead_canvas.style.zIndex = 0;
-
-	start_g.fillStyle = "rgba(0, 0, 0, 0.4)";
-	start_g.fillRect(0, 0, canvas.width, canvas.height);
-	// start_canvas.style.backgroundColor = "black";
-	start_g.fillStyle = "skyblue";
-	start_g.fillRect(50, 50, 200, 100);
-
+	canvas.width = WRAPPER_WIDTH; canvas.height = WRAPPER_HEIGHT;
 	DrawText();
-
 	// click event.
 	button.addEventListener("click", function() {
-		button.style.display="none";
-		start_g.clearRect(0, 0, start_canvas.width, start_canvas.height);
-
 		const img = g.getImageData(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 		for(let i=0;i<SCREEN_HEIGHT;i++){
 			for(let j=0;j<SCREEN_WIDTH;j++){
@@ -169,10 +141,7 @@ window.addEventListener("load", function(){
 				}		
 			}
 		}
-		DrawBalls(balls.length);
+		// DrawBalls(balls.length);
 		mainLoop();
-		// 先に実行されるっぽい. let で終了コードを準備.
-		console.log("exit animation");
-		// exit button.
 	});
 });
