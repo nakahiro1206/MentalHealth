@@ -1,5 +1,5 @@
-from flask import Flask, render_template,redirect,request,Blueprint,jsonify,url_for, session
-from flask_cors import CORS
+from flask import Flask, render_template,redirect,request,url_for, session
+# from flask_cors import CORS
 from google.oauth2.service_account import Credentials
 import gspread
 import datetime
@@ -33,41 +33,29 @@ def after_request(response):
 # access to / 
 @app.route('/',methods=['GET'])
 def index():
-#     if request.method == "POST":
-#         spreadsheet = open_gs()
-#         print(spreadsheet.sheet1.get_all_values())
-#         """let request = {
-#             name: $("#optionTitle")[0].innerHTML,
-#             trust: null,
-#             effectiveness: null,
-#             WillingnessFriends: null,
-#             WillingnessPublic: null,
-#             user_id: userId,
-#             post_category
-#         };"""
-#         data=request.get_data()
-#         data_dict=json.loads(data.decode('utf-8')) # null is converted to None.
-#         if(str(data_dict["post_category"])=="rating"):
-#             data_list=([
-#                 str(data_dict["name"]), str(data_dict["trust"]),
-#                 str(data_dict["effectiveness"]), str(data_dict["WillingnessFriends"]), 
-#                 str(data_dict["WillingnessPublic"]), str(data_dict["user_id"]),
-#                 str(data_dict["additionalfeedback"])
-#                 ])
-#             print(data_list)
-#             spreadsheet.sheet1.append_row(data_list)
-#             return data 
-#         elif(str(data_dict["post_category"])=="option"):
-#             row_num=len(spreadsheet.worksheet("methods").get_all_values())+1
-#             data_list=([
-#                 str(data_dict["title"]), str(data_dict["details"]),
-#                 str(data_dict["optionURL"]), row_num
-#                 ])
-#             print(data_list)
-#             spreadsheet.worksheet("methods").append_row(data_list)
-#             # return row_num
-#             return data   
-    return render_template('index.html')
+    spreadsheet = open_gs()
+    try:
+        username = request.args["username"]
+        print("arg: ", request.args["username"])
+    except:
+        username = ""
+    User_list = spreadsheet.worksheet("userlist")
+    Usernames = User_list.col_values(1)
+    if(username in Usernames):
+        # line id 取得.
+        # 進捗の日付管理. 同日アクセスならreject.
+        # datetime.date(yy, mm, dd)
+        session["username"] = username
+        return redirect(url_for("disclosure"))
+    else:
+        return "register username"
+    
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if(request.method=="GET"):
+        return render_template("register.html")
+    if(request.method == "POST"):
+        return "POST register, thx registering!"
 
 # signin page
 @app.route("/signin", methods=["GET"])
@@ -130,16 +118,17 @@ def postEval():
 def feedback():
     if 'username' in session:
         if(request.method=="POST"):
-            session["stress_level"] =request.form["q1"];
-            session["stress_difficulty"] = request.form["q1"];
-            session["stress_fault"] = request.form["q3"];
-            session["emotion_primary"] = request.form["primary-emotion"];
-            session["emotion_secondary"] = request.form["secondary-emotion"];
-            session["emotion_tertiary"] = request.form["tertiary-emotion"];
-
-
-            session["emotion_primary2"] = request.form["primary-emotion2"];
-            session["emotion_secondary2"] = request.form["secondary-emotion2"];
+            try:
+                session["stress_level"] =request.form["q1"];
+                session["stress_difficulty"] = request.form["q1"];
+                session["stress_fault"] = request.form["q3"];
+                session["emotion_primary"] = request.form["primary-emotion"];
+                session["emotion_secondary"] = request.form["secondary-emotion"];
+                session["emotion_tertiary"] = request.form["tertiary-emotion"];
+                session["emotion_primary2"] = request.form["primary-emotion2"];
+                session["emotion_secondary2"] = request.form["secondary-emotion2"];
+            except:
+                print("session try except")
             
             fb_choice = request.form["fb"];
             session["fb_choice"] = fb_choice;
@@ -170,4 +159,4 @@ def goHome():
 
 if __name__ == "__main__":
     # print (app.url_map)
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=2000) # , port=2000)

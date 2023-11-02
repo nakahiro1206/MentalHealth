@@ -16,18 +16,17 @@ const exit_button = document.getElementById("exit_btn");
 // orientation
 const vec = {x: 0, y: 0 };
 window.addEventListener("deviceorientation", function(e){
-	vec.x = e.gamma / 20;	// x方向の移動量: そのままでは大きい為、小さくする
-	vec.y = e.beta / 20;		// y方向の移動量: そのままでは大きい為、小さくする.
+	vec.x = Math.floor(e.gamma / 20);	// x方向の移動量: そのままでは大きい為、小さくする
+	vec.y =  Math.floor(e.beta / 20);		// y方向の移動量: そのままでは大きい為、小さくする.
 }, false);
 
 // balls array
 const balls =Array();
 /*ボールクラス*/
 class Ball{
-	constructor(x, y, r, ink, color){
+	constructor(x, y, ink, color){
 		this.x = x;	// x座標
 		this.y = y;	// y座標
-		this.r = r;	// 半径
 		this.ink = ink; // 進める量.
 		this.color = color;// color: [read, green, blue, alpha]
 		// color info.
@@ -37,17 +36,17 @@ class Ball{
 		if(this.ink==0){return false;}
 		const tmpX = this.x; const tmpY = this.y;
 		// 枠外判定.
-		if(this.x + vec.x <= SCREEN_WIDTH - this.r){
-			if(this.x + vec.x >= this.r){
+		if(this.x + vec.x <= SCREEN_WIDTH - 1){
+			if(this.x + vec.x >= 0){
 				this.x += vec.x;
-			}else{this.x = this.r;}
-		}else{this.x = SCREEN_WIDTH - this.r;}
+			}else{this.x = 0;}
+		}else{this.x = SCREEN_WIDTH - 1;}
 		// 枠外判定.
-		if(this.y + vec.y <= SCREEN_HEIGHT - this.r){
-			if(this.y + vec.y >= this.r){
+		if(this.y + vec.y <= SCREEN_HEIGHT - 1){
+			if(this.y + vec.y >= 0){
 				this.y += vec.y;
-			}else{this.y = this.r;}
-		}else{this.y = SCREEN_HEIGHT - this.r;}
+			}else{this.y = 0;}
+		}else{this.y = SCREEN_HEIGHT - 1;}
 
 		// ink を距離に比例して減らす.
 		const diffX = this.x - tmpX; const diffY = this.y - tmpY;
@@ -55,13 +54,53 @@ class Ball{
 		if(this.ink < 0){this.ink = 0;};
 
 		// 円を描画（塗りつぶし円）
-		const [red, green, blue, alpha] = this.color;
-		g.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
-		g.beginPath();
-		g.fillRect(this.x, this.y, 1, 1);
+		// const [red, green, blue, alpha] = this.color;
+		// g.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+		// g.beginPath();
+		g.clearRect(Math.floor(this.x), Math.floor(this.y), 1, 1);
+		g.fillRect(Math.floor(this.x), Math.floor(this.y), 1, 1);
 		return true;
 	};
 };
+
+function DrawBalls(){
+	const drawLimit = balls.length;// 5000;
+	if(colorCounter >=128){
+		g.fillStyle = `rgba(1,1,1, ${(colorCounter -127)/128})`;
+	}else{
+		g.fillStyle = `rgba(1,1,1, ${(128-colorCounter)/128})`;
+	}
+	let cnt=0;
+	vec.x = Math.floor(Math.random() + 0.5) * (Math.floor(Math.random() + 0.7)*2-1);
+	vec.y = Math.floor(Math.random() + 0.5) * (Math.floor(Math.random() + 0.9)*2-1);
+	for(let i=0;i<drawLimit;i++){
+		const index = i; // Math.floor(Math.random()*(balls.length));
+		const flag = balls[index].draw();
+		if(flag==false){
+			// ink==0でfalse
+			cnt++;
+		}
+	}
+	if(cnt == drawLimit){
+		return false;
+	}
+	return true;
+}
+
+/*ゲームループ*/
+let requestID;
+let colorCounter=0;// max 256;
+function mainLoop(){
+	const flag = DrawBalls();
+	// 再帰呼び出し
+	if(flag == true){
+		colorCounter = (colorCounter + 1)%256;
+		requestID = requestAnimationFrame(mainLoop);
+	}
+	else{
+		cancelAnimationFrame(requestID);
+	}
+}
 
 function DrawText(){
 	g.fillStyle = "black"; 
@@ -88,38 +127,6 @@ function DrawText(){
 	}
 }
 
-function DrawBalls(){
-	const drawLimit = 5000;
-	// frameごとに速度減衰; 時間爆発的に; activeなframe, activeなink ballだけ動かす. dead canvasとか作る;
-	// 粒子を一つにして、それに軌跡を与える方が自然かも.
-	// ボールを描く
-	let cnt=0;
-	for(let i=0;i<drawLimit;i++){
-		const index = Math.floor(Math.random()*(balls.length));
-		const flag = balls[index].draw();
-		if(flag==false){
-			cnt++;
-		}
-	}
-	if(cnt > 0){
-		return false;
-	}
-	return true;
-}
-
-/*ゲームループ*/
-let requestID;
-function mainLoop(){
-	const flag = DrawBalls();
-	// 再帰呼び出し
-	if(flag == true){
-		requestID = requestAnimationFrame(mainLoop);
-	}
-	else{
-		cancelAnimationFrame(requestID);
-	}
-}
-
 /*起動処理*/
 window.addEventListener("load", function(){
 	canvas.width = WRAPPER_WIDTH; canvas.height = WRAPPER_HEIGHT;
@@ -136,8 +143,8 @@ window.addEventListener("load", function(){
 					// if color is not transparent.
 					// generate ball
 					// sin wave.
-					const ink = 100 + 100 * Math.sin((i+j)/100);
-					balls.push(new Ball(j, i, 1, ink, [red,green,blue,alpha]));	
+					const ink = 100 + 200 * Math.random();
+					balls.push(new Ball(j, i, ink, [red,green,blue,alpha]));	
 				}		
 			}
 		}

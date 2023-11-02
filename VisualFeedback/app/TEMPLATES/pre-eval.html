@@ -23,15 +23,15 @@
             <form action="/feedback" method="post" class="was-validated">
                 <h1 class="mb-3 border-bottom border-5 border-success">Evaluate your stress and mental state!</h1>
                 <!-- 1. evaluate your stress level -->
-                <h3>1. rate your stress</h3>
+                <h2>1. Rate your stress</h2>
 
                 <!-- Q1 -->
                 <label for="q1" class="form-label w-100 mt-3">
-                    <h4>Q1: rate your stress strength.</h4>
+                    Q1-1: How strong is your stress.
                         <!-- from 0 to 6. displayed value: <span class="badge bg-light text-dark" id="badge"></span> -->
                     <div class="row mt-3">
-                        <span class ="col">extremely low</span>
-                        <span class ="col text-end">extremely high</span>
+                        <span class ="col">not at all</span>
+                        <span class ="col text-end">extremely</span>
                     </div>
                 </label>
                 <div class="input-group has-validation">
@@ -51,10 +51,10 @@
                 
                 <!-- Q2 -->
                 <label for="q2" class="form-label w-100">
-                    <h4>Q2: how difficult do you feel to resolve it?</h4>
+                    Q1-2: how difficult do you feel to resolve it?
                     <div class="row mt-3">
-                        <span class ="col">extremely easy</span>
-                        <span class ="col text-end">extremely difficult</span>
+                        <span class ="col">not at all</span>
+                        <span class ="col text-end">extremely</span>
                     </div>
                 </label>
                 <div class="w-100 d-flex justify-content-between mb-3">
@@ -69,7 +69,7 @@
 
                 <!-- Q3 -->
                 <label for="q3" class="form-label w-100">
-                    <h4>Q3: whose fault is the stress?</h4>
+                    Q1-3: whose fault is the stress?
                     <div class="row mt-3">
                         <span class ="col">yourself</span>
                         <span class ="col text-end">other(s)</span>
@@ -85,42 +85,120 @@
                     <span><input class="form-check-input" type="radio" name="q3" value="6"></span>
                 </div>
 
-                <h3>2. categorize your emotion</h3>
-                Classify your emotion into 3 dimensions! This is English version.
-                <div class="mt-3 w-75 m-auto">
-                    <select name="primary-emotion" class="form-select mb-3" id="primary-emotion"></select>
-                    <select name="secondary-emotion" class="form-select mb-3" id="secondary-emotion"></select>
-                    <select name="tertiary-emotion" class="form-select mb-3" id="tertiary-emotion"></select>
+                <div class="border-top border-3"><h2 class="mt-3">2. Rate your emotion</h2></div>
+                <!-- e1 -->
+                <label for="e1" class="form-label w-100">
+                    Q2-1: How angry dou you feel?
+                    <div class="row mt-3">
+                        <span class ="col">not at all</span>
+                        <span class ="col text-end">extremely</span>
+                    </div>
+                </label>
+                <div class="w-100 d-flex justify-content-between mb-3">
+                    <span><input class="form-check-input" type="radio" name="e1" value="0"></span>
+                    <span><input class="form-check-input" type="radio" name="e1" value="1"></span>
+                    <span><input class="form-check-input" type="radio" name="e1" value="2"></span>
+                    <span><input class="form-check-input" type="radio" name="e1" value="3"></span>
+                    <span><input class="form-check-input" type="radio" name="e1" value="4"></span>
+                    <span><input class="form-check-input" type="radio" name="e1" value="5"></span>
+                    <span><input class="form-check-input" type="radio" name="e1" value="6"></span>
                 </div>
-                感情を二段階で分類してみましょう。日本語版です。
-                <div class="mt-3 w-75 m-auto">
-                    <select name="primary-emotion2" class="form-select mb-3" id="primary-emotion2"></select>
-                    <select name="secondary-emotion2" class="form-select mb-3" id="secondary-emotion2"></select>
+
+                <!-- e2 -->
+                <label for="e2" class="form-label w-100">
+                    Q2-2: How sad do you feel?
+                    <div class="row mt-3">
+                        <span class ="col">not at all</span>
+                        <span class ="col text-end">extremely</span>
+                    </div>
+                </label>
+                <div class="w-100 d-flex justify-content-between mb-3">
+                    <span><input class="form-check-input" type="radio" name="e2" value="0"></span>
+                    <span><input class="form-check-input" type="radio" name="e2" value="1"></span>
+                    <span><input class="form-check-input" type="radio" name="e2" value="2"></span>
+                    <span><input class="form-check-input" type="radio" name="e2" value="3"></span>
+                    <span><input class="form-check-input" type="radio" name="e2" value="4"></span>
+                    <span><input class="form-check-input" type="radio" name="e2" value="5"></span>
+                    <span><input class="form-check-input" type="radio" name="e2" value="6"></span>
+                </div>
+
+                <!-- e3 -->
+                <label for="e3" class="form-label w-100">
+                    Q2-3: How fearful do you feel?
+                    <div class="row mt-3">
+                        <span class ="col">not at all</span>
+                        <span class ="col text-end">extremely</span>
+                    </div>
+                </label>
+                <div class="w-100 d-flex justify-content-between mb-3">
+                    <span><input class="form-check-input" type="radio" name="e3" value="0"></span>
+                    <span><input class="form-check-input" type="radio" name="e3" value="1"></span>
+                    <span><input class="form-check-input" type="radio" name="e3" value="2"></span>
+                    <span><input class="form-check-input" type="radio" name="e3" value="3"></span>
+                    <span><input class="form-check-input" type="radio" name="e3" value="4"></span>
+                    <span><input class="form-check-input" type="radio" name="e3" value="5"></span>
+                    <span><input class="form-check-input" type="radio" name="e3" value="6"></span>
+                </div>
+
+                <!-- e4 -->
+                <label for="e4" class="form-label w-100">
+                    Q2-4: How ashamed do you feel?
+                    <div class="row mt-3">
+                        <span class ="col">not at all</span>
+                        <span class ="col text-end">extremely</span>
+                    </div>
+                </label>
+                <div class="w-100 d-flex justify-content-between mb-3">
+                    <span><input class="form-check-input" type="radio" name="e4" value="0"></span>
+                    <span><input class="form-check-input" type="radio" name="e4" value="1"></span>
+                    <span><input class="form-check-input" type="radio" name="e4" value="2"></span>
+                    <span><input class="form-check-input" type="radio" name="e4" value="3"></span>
+                    <span><input class="form-check-input" type="radio" name="e4" value="4"></span>
+                    <span><input class="form-check-input" type="radio" name="e4" value="5"></span>
+                    <span><input class="form-check-input" type="radio" name="e4" value="6"></span>
+                </div>
+
+                <!-- e5 -->
+                <label for="e5" class="form-label w-100">
+                    Q2-5: How tired do you feel?
+                    <div class="row mt-3">
+                        <span class ="col">not at all</span>
+                        <span class ="col text-end">extremely</span>
+                    </div>
+                </label>
+                <div class="w-100 d-flex justify-content-between mb-3">
+                    <span><input class="form-check-input" type="radio" name="e5" value="0"></span>
+                    <span><input class="form-check-input" type="radio" name="e5" value="1"></span>
+                    <span><input class="form-check-input" type="radio" name="e5" value="2"></span>
+                    <span><input class="form-check-input" type="radio" name="e5" value="3"></span>
+                    <span><input class="form-check-input" type="radio" name="e5" value="4"></span>
+                    <span><input class="form-check-input" type="radio" name="e5" value="5"></span>
+                    <span><input class="form-check-input" type="radio" name="e5" value="6"></span>
                 </div>
 
                 <!-- 3. visual feedback choice -->
                 <h3>3. visual feedback choice</h3>
                 choose a feedback design you want to use.
-                <div class="container text-center w-100 mt-3 mb-3">
+                <div class="container w-100 mt-3 mb-3 m-auto">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="fb" id="fb1" value="explosion">
-                        <label class="form-check-label" for="fb1">Explosion</label>
+                        <label class="form-check-label text-success" for="fb1"><h5>Explosion</h5></label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="fb" id="fb2" value="distortion">
-                        <label class="form-check-label" for="fb2">Distiortion</label>
+                        <label class="form-check-label text-success" for="fb2"><h5>Distiortion</h5></label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="fb" id="fb3" value="distancing">
-                        <label class="form-check-label" for="fb3">Distancing & Breathing</label>
+                        <label class="form-check-label text-success" for="fb3"><h5>Distancing & Breathing</h5></label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="fb" id="fb4" value="distraction">
-                        <label class="form-check-label" for="fb4">Distracting</label>
+                        <label class="form-check-label text-success" for="fb4"><h5>Distracting</h5></label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="fb" id="fb5" value="none">
-                        <label class="form-check-label" for="fb5">None</label>
+                        <label class="form-check-label text-success" for="fb5"><h5>None</h5></label>
                     </div>
                 </div>
                 <div class="col-12">
@@ -128,7 +206,6 @@
                 </div>
             </form>
         </main>
-        <script src="./static/src/emotion-dropdown.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>

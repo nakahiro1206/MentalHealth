@@ -9,6 +9,14 @@ const wrapper = document.getElementById("wrapper");
 // button
 const exit_button = document.getElementById("exit_btn");
 
+function vibe(bool){
+    if(bool){
+        vibePattern = [900, 100, 900, 100, 900, 100, 900, 100, 900, 100, 900, 100, 900, 100, 900, 100, 900, 100, 900, 100]
+        window.navigator.vibrate(vibePattern);
+    }
+    else{window.navigator.vibrate(0);}
+}
+
 
 /*起動処理*/
 window.addEventListener("DOMContentLoaded", function(){
@@ -17,11 +25,12 @@ window.addEventListener("DOMContentLoaded", function(){
     const circles = document.getElementsByClassName("circle");
     wrapper.addEventListener("mousedown", ()=>{
         console.log("Mousedown");
-        watchFace.style= "animation: pulse 4s cubic-bezier(0.5, 0, 0.5, 1) alternate infinite;";
+        watchFace.style= "animation: pulse 20s cubic-bezier(0.5, 0, 0.5, 1) normal infinite;";
         for(let i=0;i<6;i++){
             const c = circles[i];
-            c.style=`animation: circle-${i+1} 4s ease alternate infinite;`
+            c.style=`animation: circle-${i+1} 20s ease normal infinite;`
         }
+        vibe(true);
     });
     wrapper.addEventListener("mouseup", ()=>{
         console.log("mouseup");
@@ -30,5 +39,6 @@ window.addEventListener("DOMContentLoaded", function(){
             const c = circles[i];
             c.style="";
         }
+        vibe(false);
     });
 });
