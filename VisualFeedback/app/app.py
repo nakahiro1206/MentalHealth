@@ -3,6 +3,9 @@ from flask import Flask, render_template,redirect,request,url_for, session
 from google.oauth2.service_account import Credentials
 import gspread
 import datetime
+import re
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__, static_folder="static", template_folder="TEMPLATES")
 app.secret_key = "secret"
@@ -36,26 +39,71 @@ def index():
     spreadsheet = open_gs()
     try:
         username = request.args["username"]
-        print("arg: ", request.args["username"])
     except:
         username = ""
     User_list = spreadsheet.worksheet("userlist")
-    Usernames = User_list.col_values(1)
-    if(username in Usernames):
+    usernames = User_list.row_values(1)
+    index = -1
+    for i in range(len(usernames)):
+        if(usernames[i] == username):
+            print(usernames[i], username)
+            index = i; break
+    if(index == -1):
+        return "this is home page. register username"
+    else:
+        user_col = User_list.col_values(index+1)
+        # omit float dot
+        last_access = user_col[-1]
+        last_access_date = int(re.sub(r"\D", "", last_access)[0:7]) # YYYYMMDD
+        today = str(datetime.datetime.today())
+        today_date = int(re.sub(r"\D", "", today)[0:7]) # YYYYMMDD
+        test_mode = False
+        if(test_mode == False):
+            if(today_date == last_access_date):
+                return "access is limited to just once per day"
         # line id 取得.
         # 進捗の日付管理. 同日アクセスならreject.
         # datetime.date(yy, mm, dd)
         session["username"] = username
         return redirect(url_for("disclosure"))
-    else:
-        return "register username"
     
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if(request.method=="GET"):
+        line_id = request.args["userId"]
+        session["line_id"] = line_id
         return render_template("register.html")
     if(request.method == "POST"):
-        return "POST register, thx registering!"
+        crowdworks_username = request.form["username"]
+        big5_url = request.form["url"] # 'https://bigfive-test.com/ja/result/58a70606a835c400c8b38e84'
+        headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"} 
+        # Here the user agent is for Edge browser on windows 10. You can find your browser user agent from the above given link. 
+        response = requests.get(url=big5_url, headers=headers)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        subheadings = soup.find_all(class_="subheading")
+        neuroticism = re.sub(r"\D", "", subheadings[0].get_text())
+        extraversion = re.sub(r"\D", "", subheadings[7].get_text())
+        openess2experience = re.sub(r"\D", "", subheadings[14].get_text())
+        agreeableness = re.sub(r"\D", "", subheadings[21].get_text())
+        conscientiousness = re.sub(r"\D", "", subheadings[28].get_text())
+        print(neuroticism, extraversion, openess2experience, agreeableness, conscientiousness)
+        spreadsheet = open_gs()
+        worksheet = False
+        for s in spreadsheet.worksheets():
+            if(crowdworks_username == s.title):
+                worksheet = s
+        if(worksheet == False):
+            worksheet = spreadsheet.add_worksheet(title = crowdworks_username, rows=50, cols=50)
+            label = [["timestamp", "disclosure", "fb choice", "stress level", "stress difficulty", "stress fault", "angry", "sad", "fear", "ashame", "tired"]]
+            worksheet.update("A1:K1", label)
+            userlist = spreadsheet.worksheet("userlist")
+            index = len(userlist.row_values(1))
+            data = [crowdworks_username, session["line_id"], big5_url, neuroticism, extraversion, openess2experience, agreeableness, conscientiousness, str(datetime.datetime.today())]
+            for i in range(len(data)):
+                userlist.update_cell(i+1, index+1, data[i])
+                print(data[i], "row", i+1,"col", index+1, "ok")
+        # シート作成. 書き込み処理.
+        return response.content
 
 # signin page
 @app.route("/signin", methods=["GET"])

@@ -2,41 +2,24 @@
 const SCREEN_WIDTH = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 const SCREEN_HEIGHT = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
-const WRAPPER_WIDTH = document.getElementById("wrapper").clientWidth;
-const WRAPPER_HEIGHT = document.getElementById("wrapper").clientHeight;
-const WRAPPER_LEFT = document.getElementById("wrapper").getBoundingClientRect().left;
-const WRAPPER_TOP = document.getElementById("wrapper").getBoundingClientRect().top;
-
-const CANVAS_WIDTH = document.getElementById("canvas").width;
-// console.log(SCREEN_HEIGHT * SCREEN_WIDTH);
-
 // wrapper
 const wrapper = document.getElementById("wrapper");
+
+const WRAPPER_WIDTH = wrapper.clientWidth;
+const WRAPPER_HEIGHT = wrapper.clientHeight;
+const WRAPPER_LEFT = wrapper.getBoundingClientRect().left;
+const WRAPPER_TOP = wrapper.getBoundingClientRect().top;
+
 // canvas which draws ball
 const canvas = document.getElementById("canvas");
-const g = canvas.getContext("2d"); // ctx means context
-// particles_wrapper
-const particles_wrapper = document.getElementById("particles_wrapper");
-// button
-const start_button = document.getElementById("start_btn");
-const exit_button = document.getElementById("exit_btn");
-
-// particles array
-const particles ={};
-/*ボールクラス*/
-class Particle{
-	constructor(div, x, y, color){
-		this.div = div;
-		this.x = x;	// x座標
-		this.y = y;	// y座標
-		this.color = color;// color: [read, green, blue, alpha]
-		// color info.
-	}
-};
+const ctx = canvas.getContext("2d"); // ctx means context
+// canvas for explosion
+const canvasExp = document.getElementById("canvas_exp");
+const ctxExp = canvasExp.getContext("2d");
 
 function DrawText(){
-	g.fillStyle = "black"; 
-	g.font = '20px Roboto medium';
+	ctx.fillStyle = "white"; 
+	ctx.font = '20px Roboto medium';
 	const fontSize = 20; const lineHeight = 1.5;
 	const lines = Text.split("\n");
 
@@ -47,14 +30,12 @@ function DrawText(){
 		if (i!=0){TextY += fontSize * lineHeight;}
 		for(let j=0;j<line.length;j++){
 			const value = line[j];
-			console.log(value);
-			const textWidth = g.measureText(value).width;
+			const textWidth = ctx.measureText(value).width;
 			if(TextX + textWidth > WRAPPER_WIDTH){
 				TextY += fontSize * lineHeight;
 				TextX = 0;
 			}
-			console.log([value, TextX, TextY]);
-			g.fillText(value, TextX, TextY);
+			ctx.fillText(value, TextX, TextY);
 			TextX += textWidth;
 		}
 	}
@@ -62,87 +43,63 @@ function DrawText(){
 
 function rand(min, max) {return Math.random() * ((max-min) + 1) + min;}
 
+const expArray = new Array();
+class expParticle{
+	constructor(x, y, vx, vy, color){
+		this.x = x;	// x座標
+		this.y = y;	// y座標
+		this.vx = vx;
+		this.vy = vy;
+		this.color = color;// rgba(r, g, b, a)
+	}
+};
+
 /*起動処理*/
 window.addEventListener("load", function(){
-	// wrapper
-	wrapper.style.position="relative";
 	// canvas
 	canvas.width = WRAPPER_WIDTH; canvas.height = WRAPPER_HEIGHT;
 	canvas.style.zIndex = 1;
-
-	// particle wrapper div
-	particles_wrapper.style.width = WRAPPER_WIDTH+"px";
-	particles_wrapper.style.height = WRAPPER_HEIGHT+"px";
-	// particles_wrapper.style.position="absolute";
-	particles_wrapper.style.zIndex = 0;
+	// canvas for explosion
+	canvasExp.width = WRAPPER_WIDTH; canvasExp.height = WRAPPER_HEIGHT;
+	canvasExp.style.zIndex = 0;
 
 	DrawText();
-
-	// click event.
-	start_button.addEventListener("click", function() {
-		const img = g.getImageData(0,0,WRAPPER_WIDTH,WRAPPER_HEIGHT);
-		for(let i=0;i<WRAPPER_HEIGHT;i++){
-			for(let j=0;j<WRAPPER_WIDTH;j++){
-				// i represents height, j width. 0 ~ 255.
-				const index = (j + i * WRAPPER_WIDTH)*4;
-				const [red,green,blue,alpha]=img.data.slice(index, index + 4);
-				if(alpha!=0){
-					// if color is not transparent.
-					// generate ball
-					const particle = document.createElement("div");
-					particle.setAttribute("class", "particle");
-					particle.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
-					particle.style.top = i + "px"; particle.style.left = j + "px";
-					particle.style.position = "absolute";
-					particles_wrapper.appendChild(particle);
-					particles[i *WRAPPER_WIDTH + j] =new Particle(particle, j, i, [red,green,blue,alpha]);
-				}		
-			}
+	wrapper.addEventListener("click", (event)=>{
+		const X = Math.floor(event.clientX-WRAPPER_LEFT); const Y = Math.floor(event.clientY-WRAPPER_TOP);
+		let Color = "#";
+		for(let i = 0; i < 6; i++) {
+			Color += (16*Math.random() | 0).toString(16);
 		}
-		g.clearRect(0, 0, canvas.width, canvas.height);
-		canvas.style.display="none";
-		particles_wrapper.style.display="block";
-
-		particles_wrapper.addEventListener("click",function(event){
-			let length = Object.keys(particles).length;
-			const X = Math.floor(event.clientX-WRAPPER_LEFT); const Y = Math.floor(event.clientY-WRAPPER_TOP);
-			const explosionRadius = Math.floor(Math.min(WRAPPER_HEIGHT, WRAPPER_WIDTH) / 10);
-			console.log(explosionRadius **2);
-			console.log(Object.keys(particles).length);
-			const randArray =Array();
-			// push elements' index
-			for(let i =Y-explosionRadius;i<Y+explosionRadius;i++){
-				for(let j =X-explosionRadius;j<X+explosionRadius;j++){
-					if(i<0 || i>=WRAPPER_HEIGHT){continue;}
-					if(j<0 || j>=WRAPPER_WIDTH){continue;}
-					if((Y-i)**2 +(X-j)**2 >=explosionRadius **2){continue;}
-					const index = i* WRAPPER_WIDTH + j;
-					if(index in particles){randArray.push(index);}
-					else{continue;}
-				}
-			}
-			// shuffle
-			for(let i = (randArray.length - 1); 0 < i; i--){
-				const r = Math.floor(Math.random() * (i + 1));
-				const tmp = randArray[i];
-				randArray[i] = randArray[r];
-				randArray[r] = tmp;
-			}
-			for(let r=0;r<randArray.length;r++){
-				const index = randArray[r];
-				const particle = particles[index];
-				// setTimeout(()=>{
-					const diffX = Math.floor(rand(80, 150) * Math.cos(Math.random()* 2 * Math.PI));
-					const diffY = Math.floor(rand(80, 150) * Math.sin(Math.random()* 2 * Math.PI));
-					particle.div.classList.add("opaque");
-					particle.div.style.transform = `translateX(${diffX}px) translateY(${diffY}px)`;//  scaleX(5) scaleY(5)`;
-					delete particles[index]
-				// },0);
-			}
-		});
-		// mainLoop();
-		// 先に実行されるっぽい. let で終了コードを準備.
-		// console.log("exit animation");
-		// exit button.
+		for(let i=0;i<100;i++){
+			const VX = rand(80, 150) * Math.cos(Math.random()* 2 * Math.PI);
+			const VY = rand(80, 150) * Math.sin(Math.random()* 2 * Math.PI);
+			expArray.push(new expParticle(X, Y, VX, VY, Color));
+		}
 	});
+
+	requestAnimationFrame(render);
+	function render() {
+		const radius=3;
+		ctxExp.fillStyle = '#00000010';
+		ctxExp.fillRect(0, 0, WRAPPER_WIDTH, WRAPPER_HEIGHT);
+		for(let i=0;i<expArray.length;i++){
+			const value = expArray[i];
+			value.x = value.x + value.vx * 0.05;
+			value.y = value.y + value.vy * 0.05;
+			value.vx *=0.9; value.vy *=0.9;
+			if(Math.abs(value.vx) <1 && Math.abs(value.vy)<1){
+				expArray.splice(i,1); i--;
+				continue;
+			}
+			ctx.beginPath();
+			ctx.arc(Math.floor(value.x), Math.floor(value.y), radius, 0, Math.PI*2, false);
+			ctx.clearRect(value.x-radius,value.y-radius, radius * 2, radius * 2);
+
+			ctxExp.beginPath();
+			ctxExp.fillStyle = value.color;
+			ctxExp.arc(Math.floor(value.x), Math.floor(value.y), radius, 0, Math.PI*2, false);
+			ctxExp.fill();
+		};
+		requestAnimationFrame(render);
+	}
 });

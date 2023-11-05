@@ -1,140 +1,105 @@
 // height, width
 const SCREEN_WIDTH = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 const SCREEN_HEIGHT = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-console.log(SCREEN_HEIGHT * SCREEN_WIDTH);
 
 // wrapper
 const wrapper = document.getElementById("wrapper");
+
+const WRAPPER_WIDTH = wrapper.clientWidth;
+const WRAPPER_HEIGHT = wrapper.clientHeight;
+const WRAPPER_LEFT = wrapper.getBoundingClientRect().left;
+const WRAPPER_TOP = wrapper.getBoundingClientRect().top;
+
 // canvas which draws ball
 const canvas = document.getElementById("canvas");
-const g = canvas.getContext("2d"); // ctx means context
-// particles_wrapper
-const particles_wrapper = document.getElementById("particles_wrapper");
-// start menu
-const start_canvas = document.getElementById("start_canvas");
-const start_g = start_canvas.getContext("2d");
-// button
-const start_button = document.getElementById("start_btn");
-const exit_button = document.getElementById("exit_btn");
+const ctx = canvas.getContext("2d"); // ctx means context
+// canvas for explosion
+const canvasExp = document.getElementById("canvas_exp");
+const ctxExp = canvasExp.getContext("2d");
 
-// particles array
-const particles =Array();
-/*ボールクラス*/
-class Particle{
-	constructor(div, x, y, color){
-		this.div = div;
+function DrawText(){
+	ctx.fillStyle = "white"; 
+	ctx.font = '20px Roboto medium';
+	const fontSize = 20; const lineHeight = 1.5;
+	const lines = Text.split("\n");
+
+	let TextY=fontSize;
+	for(let i=0; i<lines.length; i++){
+		let TextX=0;
+		const line = lines[i];
+		if (i!=0){TextY += fontSize * lineHeight;}
+		for(let j=0;j<line.length;j++){
+			const value = line[j];
+			const textWidth = ctx.measureText(value).width;
+			if(TextX + textWidth > WRAPPER_WIDTH){
+				TextY += fontSize * lineHeight;
+				TextX = 0;
+			}
+			ctx.fillText(value, TextX, TextY);
+			TextX += textWidth;
+		}
+	}
+}
+
+function rand(min, max) {return Math.random() * ((max-min) + 1) + min;}
+
+const expArray = new Array();
+class expParticle{
+	constructor(x, y, vx, vy, color){
 		this.x = x;	// x座標
 		this.y = y;	// y座標
-		this.color = color;// color: [read, green, blue, alpha]
-		// color info.
+		this.vx = vx;
+		this.vy = vy;
+		this.color = color;// rgba(r, g, b, a)
 	}
 };
 
-function DrawText(){
-	// 背景.
-	// g.fillStyle = "white";
-	// g.fillRect(0, 0, canvas.width, canvas.height);
-	
-	const text = "Alice's Adventure in Wonderland\nNightmare before Christmas";
-	g.fillStyle = "green"; g.font = '50px Roboto medium';
-	const fontSize = 50; const lineHeight = 1.5;
-	const lines = text.split("\n");
-	for(let i=0; i<lines.length; i++ ){
-		const line = lines[i] ;
-		let addY=fontSize;
-		if (i!=0){addY += fontSize * lineHeight * i ;}
-		g.fillText( line, 100, 100 + addY, SCREEN_WIDTH-100) ;
-	}
-	// g.fillText(text, 50, 50);
-}
-
 /*起動処理*/
 window.addEventListener("load", function(){
-	// wrapper
-	wrapper.style.position="relative";
-	// start menu
-	start_canvas.width=SCREEN_WIDTH;start_canvas.height=SCREEN_HEIGHT;
-	start_canvas.style.position="absolute";
-	start_canvas.style.zIndex = 2;
-	// start_button
-	start_button.style.display = "block";
-
 	// canvas
-	canvas.width = SCREEN_WIDTH; canvas.height = SCREEN_HEIGHT;
-	canvas.style.position="absolute";
+	canvas.width = WRAPPER_WIDTH; canvas.height = WRAPPER_HEIGHT;
 	canvas.style.zIndex = 1;
-
-	// particle wrapper div
-	particles_wrapper.style.width = SCREEN_WIDTH+"px";
-	particles_wrapper.style.height = SCREEN_HEIGHT+"px";
-	particles_wrapper.style.position="absolute";
-	particles_wrapper.style.zIndex = 0;
-
-	start_g.fillStyle = "rgba(0, 0, 0, 0.4)";
-	start_g.fillRect(0, 0, canvas.width, canvas.height);
-	// start_canvas.style.backgroundColor = "black";
-	start_g.fillStyle = "skyblue";
-	start_g.fillRect(50, 50, 200, 100);
+	// canvas for explosion
+	canvasExp.width = WRAPPER_WIDTH; canvasExp.height = WRAPPER_HEIGHT;
+	canvasExp.style.zIndex = 0;
 
 	DrawText();
-
-	// click event.
-	start_button.addEventListener("click", function() {
-		start_button.style.display="none";
-		start_g.clearRect(0, 0, start_canvas.width, start_canvas.height);
-		start_canvas.style.display ="none";
-
-		const img = g.getImageData(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-		for(let i=0;i<SCREEN_HEIGHT;i++){
-			for(let j=0;j<SCREEN_WIDTH;j++){
-				// i represents height, j width. 0 ~ 255.
-				const index = (j + i * SCREEN_WIDTH)*4;
-				const [red,green,blue,alpha]=img.data.slice(index, index + 4);
-				if(alpha!=0){
-					// if color is not transparent.
-					// generate ball
-					const particle = document.createElement("div");
-					particle.setAttribute("class", "particle");
-					particle.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
-					particle.style.top = i + "px"; particle.style.left = j + "px";
-					particle.style.position = "absolute";
-					particles_wrapper.appendChild(particle);
-					particles.push(new Particle(particle, j, i, [red,green,blue,alpha]));
-				}		
-			}
+	wrapper.addEventListener("click", (event)=>{
+		const X = Math.floor(event.clientX-WRAPPER_LEFT); const Y = Math.floor(event.clientY-WRAPPER_TOP);
+		let Color = "#";
+		for(let i = 0; i < 6; i++) {
+			Color += (16*Math.random() | 0).toString(16);
 		}
-		g.clearRect(0, 0, canvas.width, canvas.height);
-		canvas.style.display="none";
-
-		particles_wrapper.addEventListener("click",function(event){
-			const clientX = event.clientX; const clientY = event.clientY;
-			// console.log(clientX, clientY);
-			const explosionRadius = 50;
-			let length = particles.length;
-			for(let i=0;i<length;i++){
-				const particle = particles[i];
-				if((clientX-particle.x)**2 + (clientY-particle.y)**2 < explosionRadius**2){
-					// explosion effect.
-					particle.div.addEventListener('transitionend', function() {
-						particle.div.remove();
-					});
-
-					function rand(min, max) {return Math.random() * ((max-min) + 1) + min;}
-					const diffX = Math.floor(rand(80, 150) * Math.cos(Math.random()* 2 * Math.PI));
-      				const diffY = Math.floor(rand(80, 150) * Math.sin(Math.random()* 2 * Math.PI));
-					if(i%100==0)console.log(`translateX( ${diffX} px) translateY( ${diffY} px)`);
-					particle.div.style.transform = `translateX(${diffX}px) translateY(${diffY}px)`;
-					particle.div.style.opacity = "0";
-					particle.div.style.transition="all 1s ease";
-					// particle.div.remove();
-					particles.splice(i,1);
-					length--;i--;
-				}
-			};
-		});
-		// mainLoop();
-		// 先に実行されるっぽい. let で終了コードを準備.
-		// console.log("exit animation");
-		// exit button.
+		for(let i=0;i<100;i++){
+			const VX = rand(80, 150) * Math.cos(Math.random()* 2 * Math.PI);
+			const VY = rand(80, 150) * Math.sin(Math.random()* 2 * Math.PI);
+			expArray.push(new expParticle(X, Y, VX, VY, Color));
+		}
 	});
+
+	requestAnimationFrame(render);
+	function render() {
+		const radius=3;
+		ctxExp.fillStyle = '#00000010';
+		ctxExp.fillRect(0, 0, WRAPPER_WIDTH, WRAPPER_HEIGHT);
+		for(let i=0;i<expArray.length;i++){
+			const value = expArray[i];
+			value.x = value.x + value.vx * 0.05;
+			value.y = value.y + value.vy * 0.05;
+			value.vx *=0.9; value.vy *=0.9;
+			if(Math.abs(value.vx) <1 && Math.abs(value.vy)<1){
+				expArray.splice(i,1); i--;
+				continue;
+			}
+			ctx.beginPath();
+			ctx.arc(Math.floor(value.x), Math.floor(value.y), radius, 0, Math.PI*2, false);
+			ctx.clearRect(value.x-radius,value.y-radius, radius * 2, radius * 2);
+
+			ctxExp.beginPath();
+			ctxExp.fillStyle = value.color;
+			ctxExp.arc(Math.floor(value.x), Math.floor(value.y), radius, 0, Math.PI*2, false);
+			ctxExp.fill();
+		};
+		requestAnimationFrame(render);
+	}
 });

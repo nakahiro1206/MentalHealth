@@ -10,7 +10,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .form-signin {
-            max-width: 75%;
+            max-width: 100%;
             padding: 1rem;
             }
         </style>
@@ -24,16 +24,18 @@
             };
         </script>
     </head>
-    <body class="bg-faded">
-        <div>Big Five (imported from https://bigfive-test.com/test/) </div>
-        <main class="form-signin w-100 m-auto">
-            <div id="result"></div>
-            <form action="/register" method="post">
-                <button class="btn btn-primary w-100 py-2" type="button" onclick="Alert()">Alert</button>
-                <button class="btn btn-primary w-100 py-2" type="submit">Submit</button>
-            </form>
-        </main>
-        <iframe src="https://bigfive-test.com/test/" class="w-100 ratio ratio-1x1" id="bigfive"></iframe>
+    <body class="bg-faded form-signin w-100 m-auto was-validated">
+        <div class="mt-3 mb-3">Take Big Five test<br/>(<span class="text-info text-decoration-underline">https://bigfive-test.com/test/</span>)</div>
+        <form action="/register" method="post">
+            <iframe src="https://bigfive-test.com/test/" class="w-100 ratio ratio-1x1" id="bigfive"></iframe>
+            <div class="mt-3 mb-3">
+                <label for="username" class="form-label">Crowd Works username</label>
+                <input class="form-control" name="username" id="username" placeholder="username on Crowd Works">
+                <label for="url" class="form-label mt-3">After taking test, copy the link shown in result page which describes your personality, and paste here.</label>
+                <input class="form-control" name="url" id="url" placeholder="https://bigfive-test.com/result/XXX">
+            </div>
+            <div class="text-center"><button class="btn btn-primary w-75 m-auto" type="submit">Submit</button></div>
+        </form>
         <script>
             const URL = 'https://bigfive-test.com/result/58a70606a835c400c8b38e84';
             const METHOD = 'GET';
