@@ -34,38 +34,64 @@ def after_request(response):
     return response
 
 # access to / 
-@app.route('/',methods=['GET'])
+@app.route('/',methods=['GET','POST'])
 def index():
-    spreadsheet = open_gs()
-    try:
-        username = request.args["username"]
-    except:
-        username = ""
-    User_list = spreadsheet.worksheet("userlist")
-    usernames = User_list.row_values(1)
-    index = -1
-    for i in range(len(usernames)):
-        if(usernames[i] == username):
-            print(usernames[i], username)
-            index = i; break
-    if(index == -1):
-        return "this is home page. register username"
-    else:
-        user_col = User_list.col_values(index+1)
-        # omit float dot
-        last_access = user_col[-1]
-        last_access_date = int(re.sub(r"\D", "", last_access)[0:7]) # YYYYMMDD
-        today = str(datetime.datetime.today())
-        today_date = int(re.sub(r"\D", "", today)[0:7]) # YYYYMMDD
-        test_mode = False
-        if(test_mode == False):
-            if(today_date == last_access_date):
-                return "access is limited to just once per day"
-        # line id 取得.
-        # 進捗の日付管理. 同日アクセスならreject.
-        # datetime.date(yy, mm, dd)
-        session["username"] = username
-        return redirect(url_for("disclosure"))
+    if(request.method=="GET"):
+        spreadsheet = open_gs()
+        User_list = spreadsheet.worksheet("userlist")
+        usernames = User_list.row_values(1);
+        try:
+            username = request.args["username"]
+        except:
+            username = ""
+        
+        index = -1
+        for i in range(len(usernames)):
+            if(usernames[i] == username):
+                print(usernames[i], username)
+                index = i; break
+        if(index == -1):
+            return "register username"
+            # return redirect(url_for("disclosure"))
+        else:
+            user_col = User_list.col_values(index+1)
+            # omit float dot
+            last_access = user_col[-1]
+            last_access_date = int(re.sub(r"\D", "", last_access)[0:7]) # YYYYMMDD
+            today = str(datetime.datetime.today())
+            today_date = int(re.sub(r"\D", "", today)[0:7]) # YYYYMMDD
+            test_mode = False
+            if(test_mode == False):
+                if(today_date == last_access_date):
+                    return "access is limited to just once per day"
+            # line id 取得.
+            # 進捗の日付管理. 同日アクセスならreject.
+            # datetime.date(yy, mm, dd)
+            session["username"] = username
+            return redirect(url_for("disclosure"))
+    elif(request.method=="POST"):
+        if('username' not in session):return redirect(url_for("index"))
+        try:
+            stress_level =request.form["q1"];
+            stress_diff = request.form["q1"];
+            stress_fault = request.form["q3"];
+            anger = request.form["e1"]
+            sadness = request.form["e2"]
+            fear = request.form["e3"]
+            ashame = request.form["e4"]
+            tiredness = request.form["e5"]
+        except:
+            return "form error"
+        spreadsheet = open_gs()
+        log = spreadsheet.worksheet(("log"))
+        d = datetime.datetime.today()
+        # YYYYMMDDHHMM
+        date_str = str(d.year).zfill(4) + str(d.month).zfill(2) + str(d.day).zfill(2) + str(d.hour).zfill(2) + str(d.minute).zfill(2);
+        log.append_row([date_str, session["username"], session["disclosure"], session["fb_choice"], 
+                        stress_level, stress_diff, stress_fault, 
+                        anger,sadness,fear,ashame, tiredness])
+        return "successfully collected!"
+    else:return 0;
     
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -142,7 +168,7 @@ def disclosure():
     if 'username' in session:
         return render_template('disclosure.html')
     else:
-        return redirect(url_for('signin'))
+        return redirect(url_for('index'))
     
 @app.route('/pre-eval', methods=["GET", "POST"])
 def preEval():
@@ -162,49 +188,21 @@ def postEval():
     else:
         return redirect(url_for('signin'))
 
-@app.route('/feedback', methods=["GET", "POST"])
+@app.route('/feedback', methods=["POST"])
 def feedback():
     if 'username' in session:
-        if(request.method=="POST"):
-            try:
-                session["stress_level"] =request.form["q1"];
-                session["stress_difficulty"] = request.form["q1"];
-                session["stress_fault"] = request.form["q3"];
-                session["emotion_primary"] = request.form["primary-emotion"];
-                session["emotion_secondary"] = request.form["secondary-emotion"];
-                session["emotion_tertiary"] = request.form["tertiary-emotion"];
-                session["emotion_primary2"] = request.form["primary-emotion2"];
-                session["emotion_secondary2"] = request.form["secondary-emotion2"];
-            except:
-                print("session try except")
-            
-            fb_choice = request.form["fb"];
-            session["fb_choice"] = fb_choice;
-
-            if(fb_choice == "explosion"): return render_template('explosion.html', text=session['disclosure'])
-            elif(fb_choice == "distortion"): return render_template('distortion.html', text=session['disclosure'])
-            elif(fb_choice == "distancing"): return render_template('breathing.html')
-            elif(fb_choice == "distraction"): return render_template('explosion.html', text=session['disclosure'])
-            elif(fb_choice == "none"): return redirect(url_for('postEval'))
-            else: return redirect(url_for('signin'))
-        else: return redirect(url_for('signin'))
+        session["disclosure"] = request.form["disclosure"]
+        # interactive, passive, avoidance.
+        fb_choice = request.form["fb"];
+        session["fb_choice"] = fb_choice;
+        if(fb_choice == "interactive"): return render_template('explosion.html', text=session['disclosure'])
+        elif(fb_choice == "passive"): return render_template('distortion.html', text=session['disclosure'])
+        elif(fb_choice == "avoidance"): return render_template('breathing.html')
+        elif(fb_choice == "none"): return redirect(url_for('postEval'))
+        else: return fb_choice+" is not in feedback list."
     else:
-        return redirect(url_for('signin'))
-    
-@app.route('/home', methods=["POST"])
-def goHome():
-    if 'username' in session:
-        a1 = request.form["q1"];
-        a2 = request.form["q2"];
-        print(session)
-        spreadsheet = open_gs()
-        log = spreadsheet.worksheet(("log"))
-        log.append_row([str(datetime.datetime.today()), session["username"], session["disclosure"], session["stress_level"], session["stress_difficulty"], session["stress_fault"], 
-                        session["emotion_primary"], session["emotion_secondary"], session["emotion_tertiary"], session["fb_choice"]])
-        return "HOME PAGE HERE"
-    else:
-        return redirect(url_for('signin'))
+        return "username is not in session. resume from start."
 
 if __name__ == "__main__":
     # print (app.url_map)
-    app.run(debug=True, host='0.0.0.0', port=2000) # , port=2000)
+    app.run(debug=True, host='0.0.0.0', port=2000)

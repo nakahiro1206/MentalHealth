@@ -9,31 +9,111 @@
         <!-- Bootstrap core CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
-            .form-signin {
+            .myForm {
             max-width: 90%;
             padding: 1rem;
             }
-            textarea {
-            resize: none;
+            .borderFrame{
+                height:95vh;
             }
+            textarea {
+                resize: none;
+                height:65vh;
+            }
+
+            #choice{
+                display: none;
+            }
+            .fadeIn{animation-name:fadeInAnime;animation-duration:1s;animation-fill-mode:forwards;opacity:0;}
+            @keyframes fadeInAnime{from {opacity: 0;}to {opacity: 1;}}
+
+            .panels{
+                height:60vh;
+            }
+            #p1{background-color: rgb(54, 216, 183);}
+            #p2{background-color: rgb(157, 225, 111);}
+            #p3{background-color: rgb(54, 216, 183);}
+            #p4{background-color: rgb(157, 225, 111);}
+
+            /* for button panels */
+            @-webkit-keyframes bounceIn {
+                0%, 20%, 40%, 60%, 80%, 100% {-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);}
+                0% {opacity: 0;-webkit-transform: scale3d(.3, .3, .3);ransform: scale3d(.3, .3, .3);}
+                20% {-webkit-transform: scale3d(1.1, 1.1, 1.1);transform: scale3d(1.1, 1.1, 1.1);}
+                40% {-webkit-transform: scale3d(.9, .9, .9);transform: scale3d(.9, .9, .9);}
+                60% {opacity: 1;-webkit-transform: scale3d(1.03, 1.03, 1.03);transform: scale3d(1.03, 1.03, 1.03);}
+                80% {-webkit-transform: scale3d(.97, .97, .97);transform: scale3d(.97, .97, .97);}
+                100% {opacity: 1;-webkit-transform: scale3d(1, 1, 1);transform: scale3d(1, 1, 1);}
+            }
+            @keyframes bounceIn {
+                0%, 20%, 40%, 60%, 80%, 100% {-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);}
+                0% {opacity: 0;-webkit-transform: scale3d(.3, .3, .3);-ms-transform: scale3d(.3, .3, .3);transform: scale3d(.3, .3, .3);}
+                20% {-webkit-transform: scale3d(1.1, 1.1, 1.1);-ms-transform: scale3d(1.1, 1.1, 1.1);transform: scale3d(1.1, 1.1, 1.1);}
+                40% {-webkit-transform: scale3d(.9, .9, .9);-ms-transform: scale3d(.9, .9, .9);transform: scale3d(.9, .9, .9);}
+                60% {opacity: 1;-webkit-transform: scale3d(1.03, 1.03, 1.03);-ms-transform: scale3d(1.03, 1.03, 1.03);transform: scale3d(1.03, 1.03, 1.03);}
+                80% {-webkit-transform: scale3d(.97, .97, .97);-ms-transform: scale3d(.97, .97, .97);transform: scale3d(.97, .97, .97);}
+                100% {opacity: 1;-webkit-transform: scale3d(1, 1, 1);-ms-transform: scale3d(1, 1, 1);transform: scale3d(1, 1, 1);}
+            }
+            .animated {-webkit-animation-duration: .5s;animation-duration: .5s;-webkit-animation-fill-mode: both;animation-fill-mode: both;}
+            .bounceIn {-webkit-animation-name: bounceIn;animation-name: bounceIn;-webkit-animation-duration: .75s;animation-duration: .75s;}
         </style>
     </head>
     <body class="bg-faded">
-        <main class="form-signin w-100 m-auto">
-            <form action="/pre-eval" method="post">
-                    <h1><label for="Input" class="form-label">put your any thoughts into words.</label></h1>
-                    <textarea class="form-control mb-3" id="Input" rows="10" placeholder="put your any thoughts into words." name="disclosure"></textarea>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col">
-                                <button type="reset" class="btn btn-danger" onclick="document.getElementById('Input').value = ''">Reset</button>
-                            </div>
-                            <div class="col text-end">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+        <main class="myForm w-100 m-auto ">
+            <div class="border-top border-bottom border-3 border-dark borderFrame">
+                <form action="/feedback" method="post" class="was-validated">
+                    <div id="disclosure">
+                        <h1 class="mt-3 fw-bold"><label for="Input" class="form-label">Put your any thoughts into words!</label></h1>
+
+                        
+                        <textarea class="form-control" id="Input" rows="10" placeholder="put your any thoughts into words." name="disclosure" required></textarea>
+                        <div class="invalid-feedback">Please provide a valid text</div>
+
+                        <div class="form-group mt-3 mb-3">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="reset" class="btn btn-danger" onclick="document.getElementById('Input').value = ''">Reset</button>
+                                </div>
+                                <div class="col text-end">
+                                    <button type="button" class="btn btn-primary" onclick="changeView()">Submit</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-            </form>
+                    <div id="choice">
+                        <h1 class="mt-3 fw-bold"><label class="form-label">Choose feedback you prefer most from below!</label></h1>
+                        <div class="form-group mt-2 text-center d-flex flex-column panels">
+                                <div class="w-100 flex-fill mb-1"><button type="submit" class="btn w-100 h-100 text-light" id="p1" name="fb" value="interactive" onclick="bounce(p1)"><h3>Interactive Dissapearance</h3></button></div>
+                                <div class="w-100 flex-fill mb-1"><button type="sbumit" class="btn w-100 h-100 text-light" id="p2" name="fb" value="passive" onclick="bounce(p2)"><h3>Passive Dissapearance</h3></button></div>
+                                <div class="w-100 flex-fill mb-1"><button type="submit" class="btn w-100 h-100 text-light" id="p3" name="fb" value="avoidance" onclick="bounce(p3)"><h3>Avoidance</h3></button></div>
+                                <div class="w-100 flex-fill mb-1"><button type="submit" class="btn w-100 h-100 text-light" id="p4" name="fb" value="none" onclick="bounce(p4)"><h3>None</h3></button></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </main>
+        <script>
+            function changeView(){
+                const form = document.querySelector("#Input");
+                const text = String(form.value).replace(/\n| /g,'');
+                console.log(text.length);
+                if(text.length){
+                    const disclosureDiv = document.querySelector("#disclosure");
+                    const choiceDiv = document.querySelector("#choice");
+                    disclosureDiv.style.display = "none";
+                    choiceDiv.style.display = "block";
+                    choiceDiv.classList.add("fadeIn");
+                }
+            }
+            function bounce(e){
+                const element =  e;
+                console.log(element);
+                element.classList.add('animated', 'bounceIn');
+                setTimeout(function() {
+                    element.classList.remove('bounceIn'); 
+                },1000); 
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>
