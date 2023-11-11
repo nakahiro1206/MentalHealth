@@ -90,7 +90,7 @@ def index():
         log.append_row([date_str, session["username"], session["disclosure"], session["fb_choice"], 
                         stress_level, stress_diff, stress_fault, 
                         anger,sadness,fear,ashame, tiredness])
-        return "successfully collected!"
+        return "successfully collected you can close the window!"
     else:return 0;
     
 @app.route("/register", methods=["GET", "POST"])

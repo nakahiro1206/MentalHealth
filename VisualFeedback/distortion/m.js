@@ -31,7 +31,7 @@ class LetterBox {
         this.w = width; this.h = height;
         this.centerX = centerX; this.centerY = centerY;
         // at first, top: -40, left:80
-        this.body=Matter.Bodies.rectangle(this.centerX, this.centerY, this.w, this.h, {restitution: 1,friction: 0});
+        this.body=Matter.Bodies.rectangle(this.centerX, this.centerY, this.w, this.h, {restitution: 0.5,friction: 0});
         this.elem=document.querySelector(`#${id}`);
         this.elem.style.height = `${height}px`; this.elem.style.width = `${width}px`;
         this.elem.style.left = `${centerX - width/2}px`; this.elem.style.top = `${centerY - height/2}px`;
@@ -73,7 +73,7 @@ function myRender() {
 
 window.addEventListener("DOMContentLoaded",()=>{
     engine.gravity.x=1;
-    const text = "Hello";
+    const text = "ABCDFGH";
     for(let i=0;i<text.length;i++){
         const letter = text[i];
         const node = document.createElement("div");
@@ -82,6 +82,7 @@ window.addEventListener("DOMContentLoaded",()=>{
         node.setAttribute("class","letter");
         node.innerHTML = `<h1>${letter}</h1>`;
         wrapper.appendChild(node);
+        // width height centerX centerY
         const box = new LetterBox(50,50,50 * i + 50,50,id);
         LetterBoxArray.push(box);
         World.add(world, box.body);
