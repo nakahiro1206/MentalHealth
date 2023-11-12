@@ -15,7 +15,7 @@
             }
             .letter{
                 position:absolute;
-                background-color: greenyellow;
+                border-radius: 50%;
                 color: black;
             }
 		</style>
@@ -31,9 +31,10 @@
 	<body>
         <div id="wrapper">
             <canvas id="canvas"></canvas>
-            <!-- <div class="letter" id="l1"><h1>Hello</h1></div>
-            <div class="letter" id="l2"><h1>Lemons</h1></div> -->
         </div>
+        <script>
+            const Text = {{text|tojson}};
+        </script>
 		<script src="./matter.js"></script>
 		<script src="./m.js"></script>
 	</body>

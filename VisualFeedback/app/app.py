@@ -37,6 +37,7 @@ def after_request(response):
 @app.route('/',methods=['GET','POST'])
 def index():
     if(request.method=="GET"):
+        return render_template("index.html")
         spreadsheet = open_gs()
         User_list = spreadsheet.worksheet("userlist")
         usernames = User_list.row_values(1);

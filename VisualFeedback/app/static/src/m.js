@@ -42,14 +42,6 @@ window.addEventListener("deviceorientation", function(e){
 	vec.y =  Math.floor(e.beta / 20);		// y方向の移動量: そのままでは大きい為、小さくする.
 }, false);
 
-// const mouse = Mouse.create(canvas);
-// Render.mouse = mouse;
-// const mouseConstraint = Matter.MouseConstraint.create(engine, {
-//     // mouse: Render.mouse,
-//     element: document.body,
-// });
-// World.add(world, mouseConstraint);
-
 // boundaries.
 const bottom = Bodies.rectangle(wrapper_width/2, wrapper_height+50, wrapper_width, 100, {isStatic: true,});
 const Top = Bodies.rectangle(wrapper_width/2, -50, wrapper_width, 100, {isStatic: true,});
@@ -61,8 +53,8 @@ World.add(world, [bottom, Top, left, right]);
 // Render.run(render);
 function myRender() {
     LetterBoxArray.forEach((e)=>{e.render();});
-    engine.gravity.x=vec.x+1;
-    engine.gravity.y=vec.y+1;
+    engine.gravity.x=vec.x;
+    engine.gravity.y=vec.y;
     Matter.Engine.update(engine);
     requestAnimationFrame(myRender);
 }
@@ -70,24 +62,29 @@ function myRender() {
 
 window.addEventListener("DOMContentLoaded",()=>{
     engine.gravity.y=0;
-    const Text = "今日はデバッグするところがめちゃくちゃ多くて疲れました。";
-    let centerY=50;
-    let centerX=50;
+    // const Text = "今日はデバッグするところがめちゃくちゃ多くて疲れました。";
+    const radius = 15;
+    let centerY=radius;
+    let centerX=radius;
     for(let i=0;i<Text.length;i++){
         const letter = Text[i];
+        if(letter=='\n'){
+			centerY+=radius*2;
+			centerX = radius;
+			continue;
+		}
         const node = document.createElement("div");
         const id = `l${i}`;
         node.setAttribute("id",id);
         node.setAttribute("class","letter");
         node.innerHTML = `<h3>${letter}</h3>`;
         wrapper.appendChild(node);
-        const radius = 20;
         // radius centerX centerY
         const box = new LetterBox(radius,centerX,centerY,id);
-        centerX+=50;
+        centerX+=radius*2;
         if(centerX>=wrapper_width-radius){
-            centerX = 50;
-            centerY+=50;
+            centerX = radius;
+            centerY+=radius*2;
         }
         LetterBoxArray.push(box);
         World.add(world, box.body);

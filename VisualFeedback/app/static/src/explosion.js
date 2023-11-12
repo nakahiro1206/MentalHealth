@@ -1,105 +1,116 @@
-// height, width
-const SCREEN_WIDTH = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-const SCREEN_HEIGHT = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
 // wrapper
 const wrapper = document.getElementById("wrapper");
-
-const WRAPPER_WIDTH = wrapper.clientWidth;
-const WRAPPER_HEIGHT = wrapper.clientHeight;
+const wrapper_height = wrapper.clientHeight;
+const wrapper_width = wrapper.clientWidth;
 const WRAPPER_LEFT = wrapper.getBoundingClientRect().left;
 const WRAPPER_TOP = wrapper.getBoundingClientRect().top;
 
-// canvas which draws ball
 const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d"); // ctx means context
-// canvas for explosion
-const canvasExp = document.getElementById("canvas_exp");
-const ctxExp = canvasExp.getContext("2d");
+canvas.width = wrapper_width;
+canvas.height = wrapper_height;
 
-function DrawText(){
-	ctx.fillStyle = "white"; 
-	ctx.font = '20px Roboto medium';
-	const fontSize = 20; const lineHeight = 1.5;
-	const lines = Text.split("\n");
+const Engine = Matter.Engine;
+const Render = Matter.Render;
+const Mouse = Matter.Mouse;
+const engine = Engine.create();
+const Bodies = Matter.Bodies;
+const World = Matter.World;
+const world = engine.world;
 
-	let TextY=fontSize;
-	for(let i=0; i<lines.length; i++){
-		let TextX=0;
-		const line = lines[i];
-		if (i!=0){TextY += fontSize * lineHeight;}
-		for(let j=0;j<line.length;j++){
-			const value = line[j];
-			const textWidth = ctx.measureText(value).width;
-			if(TextX + textWidth > WRAPPER_WIDTH){
-				TextY += fontSize * lineHeight;
-				TextX = 0;
-			}
-			ctx.fillText(value, TextX, TextY);
-			TextX += textWidth;
-		}
-	}
-}
 
-function rand(min, max) {return Math.random() * ((max-min) + 1) + min;}
-
-const expArray = new Array();
-class expParticle{
-	constructor(x, y, vx, vy, color){
-		this.x = x;	// x座標
-		this.y = y;	// y座標
-		this.vx = vx;
-		this.vy = vy;
-		this.color = color;// rgba(r, g, b, a)
-	}
+const LetterBoxArray = new Array();
+// Bodies.rectangle(x-center, y-center, width, height)
+class LetterBox {
+    constructor(radius, centerX, centerY, id){
+        this.w = radius * 2; this.h = radius*2;
+        this.centerX = centerX; this.centerY = centerY;
+        // at first, top: -40, left:80
+        // this.body=Matter.Bodies.rectangle(this.centerX, this.centerY, this.w, this.h, {restitution: 0.5,friction: 0});
+        this.body=Matter.Bodies.circle(this.centerX, this.centerY, radius, {restitution: 0.5,friction: 0});
+        this.elem=document.querySelector(`#${id}`);
+		this.elem.style.opacity = 1;
+        this.elem.style.height = `${this.h}px`;
+        this.elem.style.width = `${this.w}px`;
+        this.elem.style.left = `${centerX - this.w/2}px`; this.elem.style.top = `${centerY - this.h/2}px`;
+        console.log(this.elem);
+    }
+    render() {
+        const {x, y} = this.body.position;
+        this.elem.style.top = `${y - this.h / 2}px`;
+        this.elem.style.left = `${x - this.w / 2}px`;
+        this.elem.style.transform = `rotate(${this.body.angle}rad)`;
+    };
 };
 
-/*起動処理*/
-window.addEventListener("load", function(){
-	// canvas
-	canvas.width = WRAPPER_WIDTH; canvas.height = WRAPPER_HEIGHT;
-	canvas.style.zIndex = 1;
-	// canvas for explosion
-	canvasExp.width = WRAPPER_WIDTH; canvasExp.height = WRAPPER_HEIGHT;
-	canvasExp.style.zIndex = 0;
+// boundaries.
+const bottom = Bodies.rectangle(wrapper_width/2, wrapper_height+50, wrapper_width, 100, {isStatic: true,});
+const Top = Bodies.rectangle(wrapper_width/2, -50, wrapper_width, 100, {isStatic: true,});
+const left = Bodies.rectangle(-50, wrapper_height/2, 100, wrapper_height, {isStatic: true,});
+const right = Bodies.rectangle(wrapper_width+50, wrapper_height/2, 100, wrapper_height, {isStatic: true,});
+World.add(world, [bottom, Top, left, right]);
 
-	DrawText();
+// Matter.Runner.run(engine)
+// Render.run(render);
+function myRender() {
+    LetterBoxArray.forEach((e)=>{e.render();});
+    Matter.Engine.update(engine);
+    requestAnimationFrame(myRender);
+}
+
+
+window.addEventListener("DOMContentLoaded",()=>{
+    // engine.gravity.y=0;
+    // const Text = "今日はデバッグするところがめちゃくちゃ多くて疲れました。";
+    const radius = 15;
+    let centerY=radius;
+    let centerX=radius;
+    for(let i=0;i<Text.length;i++){
+        const letter = Text[i];
+		if(letter=='\n'){
+			centerY+=radius*2;
+			centerX = radius;
+			continue;
+		}
+        const node = document.createElement("div");
+        const id = `l${i}`;
+        node.setAttribute("id",id);
+        node.setAttribute("class","letter");
+        node.innerHTML = `<h3>${letter}</h3>`;
+        wrapper.appendChild(node);
+        // radius centerX centerY
+        const box = new LetterBox(radius,centerX,centerY,id);
+        centerX+=radius*2;
+        if(centerX>=wrapper_width-radius){
+            centerX = radius;
+            centerY+=radius*2;
+        }
+        LetterBoxArray.push(box);
+        World.add(world, box.body);
+    }
 	wrapper.addEventListener("click", (event)=>{
-		const X = Math.floor(event.clientX-WRAPPER_LEFT); const Y = Math.floor(event.clientY-WRAPPER_TOP);
-		let Color = "#";
-		for(let i = 0; i < 6; i++) {
-			Color += (16*Math.random() | 0).toString(16);
-		}
-		for(let i=0;i<100;i++){
-			const VX = rand(80, 150) * Math.cos(Math.random()* 2 * Math.PI);
-			const VY = rand(80, 150) * Math.sin(Math.random()* 2 * Math.PI);
-			expArray.push(new expParticle(X, Y, VX, VY, Color));
-		}
+		const clickX = Math.floor(event.clientX-WRAPPER_LEFT); const clickY = Math.floor(event.clientY-WRAPPER_TOP);
+		LetterBoxArray.forEach((e)=>{
+			const {x, y} = e.body.position;
+			const dx = x - clickX; const dy = y - clickY;
+			const dist = dx**2 + dy**2;
+			const expRadius = 100;
+			if(dist<=expRadius **2){
+				const sqrtDist = Math.sqrt(dist);
+				const v = Matter.Body.getVelocity(e.body);
+				const vx = v.x; const vy = v.y;
+				const varg = Matter.Body.getAngularVelocity(e.body);
+				const diff ={x: 15*dx/sqrtDist, y: 15*dy/sqrtDist, arg:Math.random()-0.5, opacity:(expRadius**2-dist)/expRadius**2};
+				Matter.Body.setAngularVelocity(e.body, varg + diff.arg);
+				Matter.Body.setVelocity(e.body, {x: vx+diff.x, y:vy+diff.y});
+				let opacity = e.elem.style.opacity;
+				// console.log(e.elem.style.opacity);
+				if(opacity<diff.opacity){
+					opacity=0;
+				}
+				else{opacity = opacity - diff.opacity;}
+				e.elem.style.opacity = opacity;
+			} 
+		});
 	});
-
-	requestAnimationFrame(render);
-	function render() {
-		const radius=3;
-		ctxExp.fillStyle = '#00000010';
-		ctxExp.fillRect(0, 0, WRAPPER_WIDTH, WRAPPER_HEIGHT);
-		for(let i=0;i<expArray.length;i++){
-			const value = expArray[i];
-			value.x = value.x + value.vx * 0.05;
-			value.y = value.y + value.vy * 0.05;
-			value.vx *=0.9; value.vy *=0.9;
-			if(Math.abs(value.vx) <1 && Math.abs(value.vy)<1){
-				expArray.splice(i,1); i--;
-				continue;
-			}
-			ctx.beginPath();
-			ctx.arc(Math.floor(value.x), Math.floor(value.y), radius, 0, Math.PI*2, false);
-			ctx.clearRect(value.x-radius,value.y-radius, radius * 2, radius * 2);
-
-			ctxExp.beginPath();
-			ctxExp.fillStyle = value.color;
-			ctxExp.arc(Math.floor(value.x), Math.floor(value.y), radius, 0, Math.PI*2, false);
-			ctxExp.fill();
-		};
-		requestAnimationFrame(render);
-	}
-});
+    myRender();
+})

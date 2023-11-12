@@ -1,66 +1,57 @@
-
 <!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>VISUAL_FEEDBACK</title>
-    <meta name="description" content="tendency of visual feedback choice">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>VISUAL_FEEDBACK</title>
+        <meta name="description" content="tendency of visual feedback choice">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap core CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	<style>
-        body{
-            background-color: #404040;
-        }
-        .myForm {
-            /* max-width: 90%;
-            padding: 1rem; */
-            height: 100vh;
-        }
-        .wrapper{
-            position: relative;
-            max-width: 100%;
-            height:80%;
-        }
-        .canvas{
-            position: absolute;
-        }
-        .particle{
-            width: 1px;
-            height: 1px;
-            animation-fill-mode: both;
-			transition: all 2s ease;
-            /* animation: pop 1s reverse forwards;*/ /* required */
-        }
-        .opaque{
-            opacity: 0;
-        }
-	</style>
-</head>
-<body>
-    <div class="myForm m-auto">
-        <h3 class="mt-3 text-light mb-3">Tap screen and explode the letters!</h3>
-        <div id="wrapper" class="border border-1 m-auto wrapper">
-            <canvas id="canvas" class="w-100 h-100 canvas"></canvas>
-            <canvas id="canvas_exp" class="w-100 h-100 canvas"></canvas>
-        </div>
-        <form class="row mt-3 m-auto" action="/post-eval" method="get" name="myForm">
-            <div class="col text-end">
-                <button id="exit_btn" class="btn btn-secondary" type="button" onclick="loading('exit_btn')">Exit!</button>
+        <!-- Bootstrap core CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .myForm {
+            max-width: 90%;
+            padding: 1rem;
+            }
+            .borderFrame{
+                height:95vh;
+            }
+            #wrapper {
+                height:65vh;
+                position:relative;
+            }
+            .letter{
+                position:absolute;
+                border-radius: 50%;
+                color: black;
+            }
+        </style>
+    </head>
+    <body class="bg-faded">
+        <main class="myForm w-100 m-auto ">
+            <div class="border-top border-bottom border-3 border-dark borderFrame">
+                <form action="/post-eval" method="get" class="was-validated">
+                    <h1 class="mt-3 fw-bold"><label for="Input" class="form-label">Interactive <br/>Dissapearance</label></h1>
+                    <div id="wrapper" class="border border-1 border-secondary">
+                        <canvas id="canvas"></canvas>
+                    </div>
+
+                    <div class="form-group mt-3 mb-3">
+                        <div class="row">
+                            <div class="col text-end">
+                                <button type="submit" class="btn btn-primary">Exit!</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
-    <script>
-        const Text = {{text|tojson}};
-        function loading(id){
-            const btn = document.getElementById(id);
-            btn.disabled=true;
-            btn.innerHTML="<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Loading...";
-            document.myForm.submit();
-        }
-    </script>
-	<script src="./static/src/explosion.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
+        </main>
+        <script>
+            const Text = {{text|tojson}};
+            // const Text="今日はこっちの地方は土砂降りの晴天でした。"
+        </script>
+		<script src="./static/src/matter.js"></script>
+		<script src="./static/src/explosion.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </body>
 </html>
