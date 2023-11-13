@@ -37,42 +37,16 @@ def after_request(response):
 @app.route('/',methods=['GET','POST'])
 def index():
     if(request.method=="GET"):
-        return render_template("index.html")
-        spreadsheet = open_gs()
-        User_list = spreadsheet.worksheet("userlist")
-        usernames = User_list.row_values(1);
         try:
             username = request.args["username"]
+            session["username"] = username
         except:
             username = ""
-        
-        index = -1
-        for i in range(len(usernames)):
-            if(usernames[i] == username):
-                print(usernames[i], username)
-                index = i; break
-        if(index == -1):
-            return "register username"
-            # return redirect(url_for("disclosure"))
-        else:
-            user_col = User_list.col_values(index+1)
-            # omit float dot
-            last_access = user_col[-1]
-            last_access_date = int(re.sub(r"\D", "", last_access)[0:7]) # YYYYMMDD
-            today = str(datetime.datetime.today())
-            today_date = int(re.sub(r"\D", "", today)[0:7]) # YYYYMMDD
-            test_mode = False
-            if(test_mode == False):
-                if(today_date == last_access_date):
-                    return "access is limited to just once per day"
-            # line id 取得.
-            # 進捗の日付管理. 同日アクセスならreject.
-            # datetime.date(yy, mm, dd)
-            session["username"] = username
-            return redirect(url_for("disclosure"))
+        return render_template("index.html")
     elif(request.method=="POST"):
-        if('username' not in session):return redirect(url_for("index"))
+        if('username' not in session):return render_template("index.html")
         try:
+            # post-eval.
             stress_level =request.form["q1"];
             stress_diff = request.form["q1"];
             stress_fault = request.form["q3"];
@@ -82,7 +56,19 @@ def index():
             ashame = request.form["e4"]
             tiredness = request.form["e5"]
         except:
-            return "form error"
+            try:
+                cw_username = request.forms["username"]
+                TIPI = []
+                for i in range(10):
+                    TIPI.append(request.forms["q"+str(i)])
+                # E, A, C, N, O  score: 2 ~ 14 ave: 8
+                big_five =[]
+                for i in range(5):
+                    score = TIPI[i] + 8-TIPI[i+5]
+                    if(i==1): score = 8-TIPI[1] + TIPI[i+5]
+                    big_five.append(score)
+            except:
+                return render_template("index.html")
         spreadsheet = open_gs()
         log = spreadsheet.worksheet(("log"))
         d = datetime.datetime.today()
@@ -91,7 +77,7 @@ def index():
         log.append_row([date_str, session["username"], session["disclosure"], session["fb_choice"], 
                         stress_level, stress_diff, stress_fault, 
                         anger,sadness,fear,ashame, tiredness])
-        return "successfully collected you can close the window!"
+        return render_template("index.html")
     else:return 0;
     
 @app.route("/register", methods=["GET", "POST"])
