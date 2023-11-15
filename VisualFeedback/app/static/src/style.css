@@ -1,0 +1,20 @@
+.myForm {
+    max-width: 90%;
+    padding: 1rem;
+}
+.borderFrame{
+    height:95vh;
+}
+textarea {
+    resize: none;
+    height:65vh;
+}
+#wrapper {
+    height:65vh;
+    position:relative;
+}
+.hidden{
+    display:none;
+}
+.fadeIn{animation-name:fadeInAnime;animation-duration:1s;animation-fill-mode:forwards;opacity:0;}
+@keyframes fadeInAnime{from {opacity: 0;}to {opacity: 1;}}

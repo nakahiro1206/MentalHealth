@@ -37,12 +37,14 @@ def after_request(response):
 @app.route('/',methods=['GET','POST'])
 def index():
     if(request.method=="GET"):
+        username=""
+        if("username" in session):
+            username = session["username"]
         try:
             username = request.args["username"]
             session["username"] = username
-        except:
-            username = ""
-        return render_template("index.html")
+        except: pass
+        return render_template("index.html", username=username)
     elif(request.method=="POST"):
         if('username' not in session):return render_template("index.html")
         try:
@@ -55,8 +57,10 @@ def index():
             fear = request.form["e3"]
             ashame = request.form["e4"]
             tiredness = request.form["e5"]
+            session["done"] = True
         except:
             try:
+                # register
                 cw_username = request.forms["username"]
                 TIPI = []
                 for i in range(10):
@@ -67,7 +71,9 @@ def index():
                     score = TIPI[i] + 8-TIPI[i+5]
                     if(i==1): score = 8-TIPI[1] + TIPI[i+5]
                     big_five.append(score)
+                return render_template("index.html", username = session["username"])
             except:
+                #  it is not excepted
                 return render_template("index.html")
         spreadsheet = open_gs()
         log = spreadsheet.worksheet(("log"))
@@ -184,7 +190,7 @@ def feedback():
         session["fb_choice"] = fb_choice;
         if(fb_choice == "interactive"): return render_template('explosion.html', text=session['disclosure'])
         elif(fb_choice == "passive"): return render_template('distortion.html', text=session['disclosure'])
-        elif(fb_choice == "avoidance"): return render_template('breathing.html')
+        elif(fb_choice == "avoidance"): return render_template('avoidance.html', text=session['disclosure'])
         elif(fb_choice == "none"): return redirect(url_for('postEval'))
         else: return fb_choice+" is not in feedback list."
     else:

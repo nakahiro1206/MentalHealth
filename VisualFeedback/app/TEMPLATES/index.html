@@ -84,11 +84,15 @@
                             <button type="submit" class="btn btn-primary">Register</button>
                         </div>
                     </form>
-                    <form action="/post-eval" method="post" class="hidden" id="postevalButton">
-                        <div>
+                    <form action="/final-eval" method="post" class="hidden" id="finalevalButton">
+                        <div class="mt-3">
                             <button type="submit" class="btn btn-primary">Answer</button>
                         </div>
                     </form>
+                    <span id="msgWithdrawal"></span>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary hidden fadeIn" id="withdrawalButton">Withdraw</button>
+                    </div>
                 </div>
                 <div class="mt-5 text-center w-100 h-100" id="spinner">
                     <div class='spinner-border spinner-border-lg' role='status' aria-hidden='true'></div>
@@ -98,11 +102,20 @@
         </main>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script>
+            const usernameFromSession = {{username|tojson}}; 
+
             window.addEventListener("load",async ()=>{
                 const tempUrl = new URL(window.location.href);
-                const username = tempUrl.searchParams.get('username');
-                console.log(username);
-                if(username == null || username == undefined) {
+                const usernameFromUrl = tempUrl.searchParams.get('username');
+                let username = null;
+                if(usernameFromSession != null && usernameFromSession != undefined && usernameFromSession!=''){
+                    username = usernameFromSession;
+                }
+                else if(usernameFromUrl != null && usernameFromUrl != undefined){
+                    username = usernameFromUrl;
+                }
+                console.log("username: ", username)
+                if(username == null && username == undefined) {
                     // not registered;
                     document.querySelector("#msg").innerHTML="Your access is invalid.<br/>Access from the link LINE bot sent.";
                     document.querySelector("#msg").classList.add("fadeIn");
@@ -122,7 +135,7 @@
                         console.log(json.username);
                         // how many days have been ended.
                         // if not registered progress = -1;
-                        const progress = json.progress;
+                        const progress = 28// json.progress;
                         const week = Math.ceil((progress + 0.5) / 7);
                         document.querySelector("#week").innerHTML=week;
                         if(progress<0){
@@ -131,13 +144,7 @@
                             document.querySelector("#registerButton").classList.remove("hidden");
                             document.querySelector("#registerButton").classList.add("fadeIn");
                         }
-                        else if(progress>=28){
-                            document.querySelector("#msg").innerHTML="Finally answer the questionnaire!"
-                            document.querySelector("#msg").classList.add("fadeIn");
-                            document.querySelector("#postevalButton").classList.remove("hidden");
-                            document.querySelector("#postevalButton").classList.add("fadeIn");
-                        }
-                        else{
+                        else {
                             const day = progress % 7;
                             const btns = document.querySelectorAll(".btn-circle");
                             for(let i=0;i<day;i++){
@@ -145,18 +152,32 @@
                                 btns[i].classList.add("btn-primary");
                                 btns[i].innerHTML='<span class="bi bi-check fs-1"></span>';
                             }
-
-                            if(json.todayAccess){
-                                document.querySelector("#msg").innerHTML="You have already done today's practice.<br/>Thank you!"
+                            if(progress>=28){
+                                document.querySelector("#msg").innerHTML="Finally answer the questionnaire!"
                                 document.querySelector("#msg").classList.add("fadeIn");
+                                document.querySelector("#finalevalButton").classList.remove("hidden");
+                                document.querySelector("#finalevalButton").classList.add("fadeIn");
                             }
                             else{
-                                //invalid the button
-                                // span "you have already accessed"
-                                btns[day].classList.remove("btn-secondary");
-                                btns[day].classList.add("btn-light");
-                                btns[day].innerHTML='<span class="bi bi-chat-dots fs-1"></span>';
-                                btns[day].onclick = "";
+                                
+
+                                if(json.todayAccess){
+                                    document.querySelector("#msg").innerHTML="You have already done today's practice.<br/>Thank you!"
+                                    document.querySelector("#msg").classList.add("fadeIn");
+                                }
+                                else{
+                                    //invalid the button
+                                    // span "you have already accessed"
+                                    btns[day].classList.remove("btn-secondary");
+                                    btns[day].classList.add("btn-light");
+                                    btns[day].innerHTML='<span class="bi bi-chat-dots fs-1"></span>';
+                                    btns[day].onclick = "";
+                                }
+                                const withdrawalButton = document.querySelector("#withdrawalButton");
+                                document.querySelector("#msgWithdrawal").innerHTML="If you want to withdraw the consent and give up experiment, click withdraw button."
+                                const withdrawalUrl = "https://docs.google.com/forms/d/e/1FAIpQLSd6FHSsdS5h2Ka01PwrrcTrSn9rD1un__JEtyaL4QmWAcVAdQ/viewform?usp=pp_url&entry.1265895045=" + username;
+                                withdrawalButton.addEventListener("click", ()=>{location.href=`${withdrawalUrl}`;})
+                                withdrawalButton.classList.remove("hidden");
                             }
                         }
                         document.querySelector("#spinner").classList.add("hidden");
