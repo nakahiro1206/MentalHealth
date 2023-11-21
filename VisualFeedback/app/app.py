@@ -71,10 +71,23 @@ def index():
                     score = TIPI[i] + 8-TIPI[i+5]
                     if(i==1): score = 8-TIPI[1] + TIPI[i+5]
                     big_five.append(score)
+                session["done"] = True
                 return render_template("index.html", username = session["username"])
             except:
-                #  it is not excepted
-                return render_template("index.html")
+                try:
+                    comments =[]
+                    for i in range(4):
+                        comments.append([request.forms["good"+str(i)], request.forms["bad"+str(i)], request.forms["opp"+str(i)]])
+                    session["done"] = True
+                except:
+                    #  it is not excepted
+                    return render_template("index.html")
+            
+
+
+
+
+
         spreadsheet = open_gs()
         log = spreadsheet.worksheet(("log"))
         d = datetime.datetime.today()
@@ -86,100 +99,33 @@ def index():
         return render_template("index.html")
     else:return 0;
     
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=["GET"])
 def register():
-    if(request.method=="GET"):
-        line_id = request.args["userId"]
-        session["line_id"] = line_id
-        return render_template("register.html")
-    if(request.method == "POST"):
-        crowdworks_username = request.form["username"]
-        big5_url = request.form["url"] # 'https://bigfive-test.com/ja/result/58a70606a835c400c8b38e84'
-        headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"} 
-        # Here the user agent is for Edge browser on windows 10. You can find your browser user agent from the above given link. 
-        response = requests.get(url=big5_url, headers=headers)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        subheadings = soup.find_all(class_="subheading")
-        neuroticism = re.sub(r"\D", "", subheadings[0].get_text())
-        extraversion = re.sub(r"\D", "", subheadings[7].get_text())
-        openess2experience = re.sub(r"\D", "", subheadings[14].get_text())
-        agreeableness = re.sub(r"\D", "", subheadings[21].get_text())
-        conscientiousness = re.sub(r"\D", "", subheadings[28].get_text())
-        print(neuroticism, extraversion, openess2experience, agreeableness, conscientiousness)
-        spreadsheet = open_gs()
-        worksheet = False
-        for s in spreadsheet.worksheets():
-            if(crowdworks_username == s.title):
-                worksheet = s
-        if(worksheet == False):
-            worksheet = spreadsheet.add_worksheet(title = crowdworks_username, rows=50, cols=50)
-            label = [["timestamp", "disclosure", "fb choice", "stress level", "stress difficulty", "stress fault", "angry", "sad", "fear", "ashame", "tired"]]
-            worksheet.update("A1:K1", label)
-            userlist = spreadsheet.worksheet("userlist")
-            index = len(userlist.row_values(1))
-            data = [crowdworks_username, session["line_id"], big5_url, neuroticism, extraversion, openess2experience, agreeableness, conscientiousness, str(datetime.datetime.today())]
-            for i in range(len(data)):
-                userlist.update_cell(i+1, index+1, data[i])
-                print(data[i], "row", i+1,"col", index+1, "ok")
-        # シート作成. 書き込み処理.
-        return response.content
-
-# signin page
-@app.route("/signin", methods=["GET"])
-def signin():
-    return render_template("signin.html")
-
-# authentication
-@app.route("/authentication", methods=["GET", "POST"])
-def authentication():
-    if(request.method == "POST"):
-        spreadsheet = open_gs()
-        username = request.form["username"]
-        password = request.form["password"]
-        User_list = spreadsheet.worksheet("userlist")
-        Usernames = User_list.col_values(1)
-        Passwords = User_list.col_values(2)
-        Users={}
-        for i in range(min(len(Usernames), len(Passwords))):
-            Users[Usernames[i]] = Passwords[i]
-        if(username in Users):
-            if(password == Users[username]):
-                session["username"] = username
-                return redirect(url_for("disclosure"))# render_template("disclosure.html")
-            else:
-                # wrong password
-                return render_template("signin.html", error="Invalid crediential!")
-        else:
-            # not registered
-            return render_template("signin.html", error="Invalid crediential!")
-
-    # if request method is GET
-    else: return render_template("signin.html")
+    session["done"] = False
+    return render_template("register.html")
 
 @app.route('/disclosure')
 def disclosure():
     if 'username' in session:
+        session["done"] = False
         return render_template('disclosure.html')
     else:
         return redirect(url_for('index'))
-    
-@app.route('/pre-eval', methods=["GET", "POST"])
-def preEval():
-    if(request.method =="POST"):
-        session["disclosure"] = request.form["disclosure"]
-        print(request.form["disclosure"])
-        if 'username' in session:
-            return render_template('pre-eval.html')
-        else:
-            return redirect(url_for('signin'))
-    else: return redirect(url_for('signin'))
+
 
 @app.route('/post-eval', methods=["GET"])
 def postEval():
     if 'username' in session:
         return render_template('post-eval.html')
     else:
-        return redirect(url_for('signin'))
+        return redirect(url_for('index'))
+    
+@app.route('/final-eval', methods=["GET"])
+def finalEval():
+    if 'username' in session:
+        return render_template('final-eval.html')
+    else:
+        return redirect(url_for('index'))
 
 @app.route('/feedback', methods=["POST"])
 def feedback():
@@ -194,7 +140,7 @@ def feedback():
         elif(fb_choice == "none"): return redirect(url_for('postEval'))
         else: return fb_choice+" is not in feedback list."
     else:
-        return "username is not in session. resume from start."
+        return redirect(url_for('index'))
 
 if __name__ == "__main__":
     # print (app.url_map)

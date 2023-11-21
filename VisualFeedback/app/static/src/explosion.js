@@ -5,10 +5,6 @@ const wrapper_width = wrapper.clientWidth;
 const WRAPPER_LEFT = wrapper.getBoundingClientRect().left;
 const WRAPPER_TOP = wrapper.getBoundingClientRect().top;
 
-const canvas = document.getElementById("canvas");
-canvas.width = wrapper_width;
-canvas.height = wrapper_height;
-
 const Engine = Matter.Engine;
 const Render = Matter.Render;
 const Mouse = Matter.Mouse;
@@ -23,6 +19,7 @@ const LetterBoxArray = new Array();
 class LetterBox {
     constructor(radius, centerX, centerY, id){
         this.w = radius * 2; this.h = radius*2;
+        this.scale = 1;
         this.centerX = centerX; this.centerY = centerY;
         // at first, top: -40, left:80
         // this.body=Matter.Bodies.rectangle(this.centerX, this.centerY, this.w, this.h, {restitution: 0.5,friction: 0});
@@ -36,17 +33,21 @@ class LetterBox {
     }
     render() {
         const {x, y} = this.body.position;
+        if(x>wrapper_width){Matter.Body.setPosition(this.body,{x: wrapper_width,y: y});}
+        else if(x<0){Matter.Body.setPosition(this.body,{x: wrapper_width,y: y});}
+        if(y>wrapper_height){Matter.Body.setPosition(this.body,{x: x,y: wrapper_height});}
+        else if(y<0){Matter.Body.setPosition(this.body,{x: x,y: 0});}
         this.elem.style.top = `${y - this.h / 2}px`;
         this.elem.style.left = `${x - this.w / 2}px`;
-        this.elem.style.transform = `rotate(${this.body.angle}rad)`;
+        this.elem.style.transform = `rotate(${this.body.angle}rad) scale(${this.scale}, ${this.scale})`;
     };
 };
 
 // boundaries.
-const bottom = Bodies.rectangle(wrapper_width/2, wrapper_height+50, wrapper_width, 100, {isStatic: true,});
-const Top = Bodies.rectangle(wrapper_width/2, -50, wrapper_width, 100, {isStatic: true,});
-const left = Bodies.rectangle(-50, wrapper_height/2, 100, wrapper_height, {isStatic: true,});
-const right = Bodies.rectangle(wrapper_width+50, wrapper_height/2, 100, wrapper_height, {isStatic: true,});
+const bottom = Bodies.rectangle(wrapper_width/2, wrapper_height+50, wrapper_width+200, 100, {isStatic: true,});
+const Top = Bodies.rectangle(wrapper_width/2, -50, wrapper_width+200, 100, {isStatic: true,});
+const left = Bodies.rectangle(-50, wrapper_height/2, 100, wrapper_height+200, {isStatic: true,});
+const right = Bodies.rectangle(wrapper_width+50, wrapper_height/2, 100, wrapper_height+200, {isStatic: true,});
 World.add(world, [bottom, Top, left, right]);
 
 // Matter.Runner.run(engine)
@@ -59,8 +60,7 @@ function myRender() {
 
 
 window.addEventListener("DOMContentLoaded",()=>{
-    // engine.gravity.y=0;
-    // const Text = "今日はデバッグするところがめちゃくちゃ多くて疲れました。";
+    engine.gravity.y=0;
     const radius = 15;
     let centerY=radius;
     let centerX=radius;
@@ -99,16 +99,12 @@ window.addEventListener("DOMContentLoaded",()=>{
 				const v = Matter.Body.getVelocity(e.body);
 				const vx = v.x; const vy = v.y;
 				const varg = Matter.Body.getAngularVelocity(e.body);
-				const diff ={x: 15*dx/sqrtDist, y: 15*dy/sqrtDist, arg:Math.random()-0.5, opacity:(expRadius**2-dist)/expRadius**2};
+				const diff ={x: 15*dx/sqrtDist, y: 15*dy/sqrtDist, arg:Math.random()-0.5, scale: Math.random()*0.5 + 0.3};
 				Matter.Body.setAngularVelocity(e.body, varg + diff.arg);
 				Matter.Body.setVelocity(e.body, {x: vx+diff.x, y:vy+diff.y});
-				let opacity = e.elem.style.opacity;
-				// console.log(e.elem.style.opacity);
-				if(opacity<diff.opacity){
-					opacity=0;
-				}
-				else{opacity = opacity - diff.opacity;}
-				e.elem.style.opacity = opacity;
+                Matter.Body.scale(e.body, diff.scale, diff.scale);
+				// e.elem.style.opacity = opacity;
+                e.scale *= diff.scale;
 			} 
 		});
 	});
