@@ -3,15 +3,13 @@
     padding: 1rem;
 }
 .borderFrame{
-    height:95vh;
-}
-textarea {
-    resize: none;
-    height:65vh;
+    position:relative;
 }
 #wrapper {
-    height:65vh;
     position:relative;
+}
+.scroll-container{
+    overflow-y: scroll;
 }
 .hidden{
     display:none;

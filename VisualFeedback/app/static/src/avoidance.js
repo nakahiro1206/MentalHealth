@@ -53,8 +53,9 @@ const Ratio = new Array(circle_num);
 const inflate_time = 240;
 const vibrate_time = 180;
 const deflate_time = 240;
+const inflate_ratio = Math.sqrt(3 * wrapper_height * wrapper_width / radius /radius / 4 /circle_num);
 for(let i=0;i<circle_num;i++){
-    const ratio = Math.random()*3
+    const ratio = Math.random()*inflate_ratio;
     inflate[i] = ratio/inflate_time;
     deflate[i] = (1/ratio)/deflate_time;
     Ratio[i] = ratio;
@@ -82,7 +83,7 @@ function myRender() {
         if(state==0){
             instruction.innerHTML = "息を吸って";
             for(let i=0;i<circle_num;i++){
-                const ratio = Math.random()*4
+                const ratio = Math.random()*inflate_ratio;
                 inflate[i] = ratio/inflate_time;
                 deflate[i] = (1/ratio)/deflate_time;
                 Ratio[i] = ratio;
