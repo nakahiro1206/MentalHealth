@@ -33,12 +33,11 @@
                 <form action="/" method="post" class="was-validated" name="myForm">
                     <!-- 1. evaluate your stress level -->
                     <div id="stressQuestion">
-                        <h2>1. ストレスについて</h2>
-
+                        1. 記述したストレスについて
                         <!-- Q1 -->
                         <div id="stress-q1">
                             <label for="q1" class="form-label w-100 mt-3">
-                                Q1-1: ストレスの強さ
+                                Q1-1: ストレスの大小は
                                     <!-- from 0 to 6. displayed value: <span class="badge bg-light text-dark" id="badge"></span> -->
                                 <div class="row mt-3">
                                     <span class ="col">全く強くない</span>
@@ -61,7 +60,7 @@
                         <!-- Q2 -->
                         <div id="stress-q2" class="hidden">
                             <label for="q2" class="form-label w-100 mt-3">
-                                Q1-2: ストレスを解決・なくすことの難しさ
+                                Q1-2: ストレスのもと・原因をなくすことは
                                 <div class="row mt-3">
                                     <span class ="col">全く難しくない</span>
                                     <span class ="col text-end">とても難しい</span>
@@ -81,10 +80,10 @@
                         <!-- Q3 -->
                         <div id="stress-q3" class="hidden">
                             <label for="q3" class="form-label w-100 mt-3">
-                                Q1-3: ストレスは誰によるものなのか
+                                Q1-3: ストレスの原因は自分自身にある
                                 <div class="row mt-3">
-                                    <span class ="col">自分自身</span>
-                                    <span class ="col text-end">他人</span>
+                                    <span class ="col">全くそう思わない</span>
+                                    <span class ="col text-end">とてもそう思う</span>
                                 </div>
                             </label>
                             <div class="w-100 d-flex justify-content-between mb-3">
@@ -100,11 +99,11 @@
                     </div>
 
                     <div id="emotionQuestion" class="hidden">
-                        <h2 class="mt-3">2. 感情について</h2>
+                        <div class="mt-3">2. 記述したストレスによる感情について</div>
                         <!-- e1 -->
                         <div id="emotion-q1">
                             <label for="e1" class="form-label w-100 mt-3">
-                                Q2-1: ストレスによる怒り
+                                Q2-1: 怒り
                                 <div class="row mt-3">
                                     <span class ="col">全くない</span>
                                     <span class ="col text-end">とても強い</span>
@@ -124,7 +123,7 @@
                         <!-- e2 -->
                         <div id="emotion-q2" class="hidden">
                             <label for="e2" class="form-label w-100 mt-3">
-                                Q2-2: ストレスによる悲しみ
+                                Q2-2: 悲しみ
                                 <div class="row mt-3">
                                     <span class ="col">全くない</span>
                                     <span class ="col text-end">とても強い</span>
@@ -144,7 +143,7 @@
                         <!-- e3 -->
                         <div id="emotion-q3" class="hidden">
                             <label for="e3" class="form-label w-100 mt-3">
-                                Q2-3: ストレスによる恐怖感
+                                Q2-3: 恐怖感
                                 <div class="row mt-3">
                                     <span class ="col">全くない</span>
                                     <span class ="col text-end">とても強い</span>
@@ -164,7 +163,7 @@
                         <!-- e4 -->
                         <div id="emotion-q4" class="hidden">
                             <label for="e4" class="form-label w-100 mt-3">
-                                Q2-4: ストレスによる恥ずかしさ
+                                Q2-4: 恥ずかしさ
                                 <div class="row mt-3">
                                     <span class ="col">全くない</span>
                                     <span class ="col text-end">とても強い</span>
@@ -184,7 +183,7 @@
                         <!-- e5 -->
                         <div id="emotion-q5" class="hidden">
                             <label for="e5" class="form-label w-100 mt-3">
-                                Q2-5: ストレスによる疲労感
+                                Q2-5: 疲労感
                                 <div class="row mt-3">
                                     <span class ="col">全くない</span>
                                     <span class ="col text-end">とても強い</span>
@@ -198,6 +197,12 @@
                                 <span><input class="form-check-input" type="radio" name="e5" value="4"></span>
                                 <span><input class="form-check-input" type="radio" name="e5" value="5"></span>
                                 <span><input class="form-check-input" type="radio" name="e5" value="6"></span>
+                            </div>
+
+                            <div>
+                                <label for="good${i}" class="form-label">この選択肢を選んだ理由</label>
+                                <textarea class="form-control" name="good${i}" id="good${i}" required></textarea>
+                                <div class="invalid-feedback">文章を入力してください。</div>
                             </div>
                         </div>
                     </div>

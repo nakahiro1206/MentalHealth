@@ -57,14 +57,14 @@ def index():
             fear = request.form["e3"]
             ashame = request.form["e4"]
             tiredness = request.form["e5"]
-            session["done"] = True
+            return render_template("index.html", username=session["username"])
         except:
             try:
                 # register
-                cw_username = request.forms["username"]
+                cw_username = request.form["username"]
                 TIPI = []
                 for i in range(10):
-                    TIPI.append(request.forms["q"+str(i)])
+                    TIPI.append(request.form["q"+str(i)])
                 # E, A, C, N, O  score: 2 ~ 14 ave: 8
                 big_five =[]
                 for i in range(5):
@@ -77,7 +77,7 @@ def index():
                 try:
                     comments =[]
                     for i in range(4):
-                        comments.append([request.forms["good"+str(i)], request.forms["bad"+str(i)], request.forms["opp"+str(i)]])
+                        comments.append([request.form["good"+str(i)], request.form["bad"+str(i)], request.forms["opp"+str(i)]])
                     session["done"] = True
                 except:
                     #  it is not excepted
