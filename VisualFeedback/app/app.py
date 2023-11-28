@@ -50,7 +50,7 @@ def index():
         try:
             # post-eval.
             stress_level =request.form["q1"];
-            stress_diff = request.form["q1"];
+            stress_diff = request.form["q2"];
             stress_fault = request.form["q3"];
             anger = request.form["e1"]
             sadness = request.form["e2"]
@@ -67,6 +67,7 @@ def index():
                     TIPI.append(request.form["q"+str(i)])
                 # E, A, C, N, O  score: 2 ~ 14 ave: 8
                 big_five =[]
+                # record into sheet as string!
                 for i in range(5):
                     score = TIPI[i] + 8-TIPI[i+5]
                     if(i==1): score = 8-TIPI[1] + TIPI[i+5]
@@ -82,12 +83,6 @@ def index():
                 except:
                     #  it is not excepted
                     return render_template("index.html")
-            
-
-
-
-
-
         spreadsheet = open_gs()
         log = spreadsheet.worksheet(("log"))
         d = datetime.datetime.today()
@@ -137,9 +132,48 @@ def feedback():
         if(fb_choice == "interactive"): return render_template('explosion.html', text=session['disclosure'])
         elif(fb_choice == "passive"): return render_template('distortion.html', text=session['disclosure'])
         elif(fb_choice == "avoidance"): return render_template('avoidance.html', text=session['disclosure'])
-        elif(fb_choice == "none"): return redirect(url_for('postEval'))
+        elif(fb_choice == "none"): return render_template('none.html', text=session['disclosure'])
         else: return fb_choice+" is not in feedback list."
     else:
+        return redirect(url_for('index'))
+    
+@app.route('/instruction/<int:number>', methods=["GET"])
+def instruction_move(number):
+    if('username' not in session):return redirect(url_for('index'))
+    if(number==0):return render_template("instruction_explosion.html",text="TEST")
+    elif(number==1):return render_template("instruction_distortion.html",text="TEST")
+    elif(number==2):return render_template("instruction_avoidance.html")
+    elif(number==3):return render_template("instruction_none.html",text="TEST")
+    else:return redirect(url_for('index'))
+
+@app.route('/instruction', methods=["POST"])
+def instruction():
+    return redirect(url_for('instruction_move', number=0))
+    if('username' not in session):return redirect(url_for('index'))
+    try:
+        # register
+        session["instruction_state"]=0;
+        return redirect(url_for('instruction_move'), number=0)
+        cw_username = request.form["username"]
+        TIPI = []
+        for i in range(10):
+            TIPI.append(request.form["q"+str(i)])
+        # E, A, C, N, O  score: 2 ~ 14 ave: 8
+        # big_five =[]
+        # # record into sheet as string!
+        # for i in range(5):
+        #     score = TIPI[i] + 8-TIPI[i+5]
+        #     if(i==1): score = 8-TIPI[1] + TIPI[i+5]
+        #     big_five.append(score)
+        session["done"] = True
+        spreadsheet = open_gs()
+        log = spreadsheet.worksheet(("log"))
+        d = datetime.datetime.today()
+        # YYYYMMDDHHMM
+        date_str = str(d.year).zfill(4) + str(d.month).zfill(2) + str(d.day).zfill(2) + str(d.hour).zfill(2) + str(d.minute).zfill(2);
+        return render_template("index.html", username = session["username"])
+    except:
+        #  it is not excepted
         return redirect(url_for('index'))
 
 if __name__ == "__main__":

@@ -18,10 +18,15 @@ const LetterBoxArray = new Array();
 class LetterBox {
     constructor(radius, centerX, centerY, id){
         this.w = radius * 2; this.h = radius*2;
+        this.scale=1;
         this.centerX = centerX; this.centerY = centerY;
         // at first, top: -40, left:80
         // this.body=Matter.Bodies.rectangle(this.centerX, this.centerY, this.w, this.h, {restitution: 0.5,friction: 0});
         this.body=Matter.Bodies.circle(this.centerX, this.centerY, radius, {restitution: 0.5,friction: 0});
+        //set velocity & argvelocity
+        Matter.Body.setAngularVelocity(this.body, Math.random()-0.5);
+        Matter.Body.setVelocity(this.body, {x: (Math.random()-0.5)*20, y:(Math.random()-0.5)*20});
+        // div
         this.elem=document.querySelector(`#${id}`);
         this.elem.style.height = `${this.h}px`;
         this.elem.style.width = `${this.w}px`;
@@ -32,7 +37,7 @@ class LetterBox {
         const {x, y} = this.body.position;
         this.elem.style.top = `${y - this.h / 2}px`;
         this.elem.style.left = `${x - this.w / 2}px`;
-        this.elem.style.transform = `rotate(${this.body.angle}rad)`;
+        this.elem.style.transform = `rotate(${this.body.angle}rad) scale(${this.scale}, ${this.scale})`;
     };
 };
 
@@ -43,16 +48,24 @@ window.addEventListener("deviceorientation", function(e){
 }, false);
 
 // boundaries.
-const bottom = Bodies.rectangle(wrapper_width/2, wrapper_height+50, wrapper_width, 100, {isStatic: true,});
-const Top = Bodies.rectangle(wrapper_width/2, -50, wrapper_width, 100, {isStatic: true,});
-const left = Bodies.rectangle(-50, wrapper_height/2, 100, wrapper_height, {isStatic: true,});
-const right = Bodies.rectangle(wrapper_width+50, wrapper_height/2, 100, wrapper_height, {isStatic: true,});
+const bottom = Bodies.rectangle(wrapper_width/2, wrapper_height+50, wrapper_width+200, 100, {isStatic: true,});
+const Top = Bodies.rectangle(wrapper_width/2, -50, wrapper_width+200, 100, {isStatic: true,});
+const left = Bodies.rectangle(-50, wrapper_height/2, 100, wrapper_height+200, {isStatic: true,});
+const right = Bodies.rectangle(wrapper_width+50, wrapper_height/2, 100, wrapper_height+200, {isStatic: true,});
 World.add(world, [bottom, Top, left, right]);
 
 // Matter.Runner.run(engine)
 // Render.run(render);
 function myRender() {
-    LetterBoxArray.forEach((e)=>{e.render();});
+    LetterBoxArray.forEach((e)=>{
+        const radius = 15 * e.scale;
+        const {x, y} = e.body.position;
+        if(x<=radius || x>= wrapper_width-radius || y<=radius || y>= wrapper_height-radius){
+            e.scale *= 0.9;
+            Matter.Body.scale(e.body, 0.9, 0.9);
+        }
+        e.render();
+    });
     engine.gravity.x=vec.x;
     engine.gravity.y=vec.y;
     Matter.Engine.update(engine);
@@ -62,7 +75,6 @@ function myRender() {
 
 window.addEventListener("DOMContentLoaded",()=>{
     engine.gravity.y=0;
-    // const Text = "今日はデバッグするところがめちゃくちゃ多くて疲れました。";
     const radius = 15;
     let centerY=radius;
     let centerX=radius;
