@@ -14,15 +14,42 @@
         <main class="myForm w-100 m-auto">
             <div class="border-top border-bottom border-3 border-dark borderFrame">
                 <h1 class="mt-3 mb-3">ストレスと感情についてのアンケート</h1>
-                <form action="/" method="post" class="was-validated" name="myForm">
+                <form action="/repeat_check" method="post" class="was-validated" name="myForm">
                     <div class="mt-3 mb-3 scroll-container">
                         <!-- 1. evaluate your stress level -->
-                        <div id="stressQuestion">
-                            1. 記述したストレスについて
+                        <div>
+                            <div class="mt-3">1. 体験したフィードバックについて</div>
+                            <div>
+                                <label for="f1" class="form-label w-100 mt-3">
+                                    Q1-1: ストレス発散の効果は
+                                    <div class="w-100 row mt-3">
+                                        <span class ="col">全くない</span>
+                                        <span class ="col text-end">とても効果的</span>
+                                    </div>
+                                </label>
+                                <div class="w-100 d-flex justify-content-between mb-3">
+                                    <span><input class="form-check-input" type="radio" name="f1" value="0"></span>
+                                    <span><input class="form-check-input" type="radio" name="f1" value="1"></span>
+                                    <span><input class="form-check-input" type="radio" name="f1" value="2"></span>
+                                    <span><input class="form-check-input" type="radio" name="f1" value="3"></span>
+                                    <span><input class="form-check-input" type="radio" name="f1" value="4"></span>
+                                    <span><input class="form-check-input" type="radio" name="f1" value="5"></span>
+                                    <span><input class="form-check-input" type="radio" name="f1" value="6"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="f2" class="form-label">Q1-2: この選択肢を選んだ理由</label>
+                                <textarea class="form-control" name="f2" id="f2" required></textarea>
+                                <div class="invalid-feedback">文章を入力してください。</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mt-3">2. 記述したストレスについて</div>
                             <!-- Q1 -->
                             <div id="stress-q1">
                                 <label for="q1" class="form-label w-100 mt-3">
-                                    Q1-1: ストレスの大小は
+                                    Q2-1: ストレスの大小は
                                         <!-- from 0 to 6. displayed value: <span class="badge bg-light text-dark" id="badge"></span> -->
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全く強くない</span>
@@ -45,7 +72,7 @@
                             <!-- Q2 -->
                             <div>
                                 <label for="q2" class="form-label w-100 mt-3">
-                                    Q1-2: ストレスのもと・原因をなくすことは
+                                    Q2-2: ストレスのもと・原因をなくすことは
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全く難しくない</span>
                                         <span class ="col text-end">とても難しい</span>
@@ -65,7 +92,7 @@
                             <!-- Q3 -->
                             <div>
                                 <label for="q3" class="form-label w-100 mt-3">
-                                    Q1-3: ストレスの原因は自分自身にある
+                                    Q2-3: ストレスの原因は自分自身にある
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全くそう思わない</span>
                                         <span class ="col text-end">とてもそう思う</span>
@@ -84,11 +111,11 @@
                         </div>
 
                         <div>
-                            <div class="mt-3">2. 記述したストレスによる感情について</div>
+                            <div class="mt-3">3. 記述したストレスによる感情について</div>
                             <!-- e1 -->
                             <div id="emotion-q1">
                                 <label for="e1" class="form-label w-100 mt-3">
-                                    Q2-1: 怒り
+                                    Q3-1: 怒り
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全くない</span>
                                         <span class ="col text-end">とても強い</span>
@@ -108,7 +135,7 @@
                             <!-- e2 -->
                             <div>
                                 <label for="e2" class="form-label w-100 mt-3">
-                                    Q2-2: 悲しみ
+                                    Q3-2: 悲しみ
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全くない</span>
                                         <span class ="col text-end">とても強い</span>
@@ -128,7 +155,7 @@
                             <!-- e3 -->
                             <div>
                                 <label for="e3" class="form-label w-100 mt-3">
-                                    Q2-3: 恐怖感
+                                    Q3-3: 恐怖感
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全くない</span>
                                         <span class ="col text-end">とても強い</span>
@@ -148,7 +175,7 @@
                             <!-- e4 -->
                             <div>
                                 <label for="e4" class="form-label w-100 mt-3">
-                                    Q2-4: 恥ずかしさ
+                                    Q3-4: 恥ずかしさ
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全くない</span>
                                         <span class ="col text-end">とても強い</span>
@@ -168,7 +195,7 @@
                             <!-- e5 -->
                             <div>
                                 <label for="e5" class="form-label w-100 mt-3">
-                                    Q2-5: 疲労感
+                                    Q3-5: 疲労感
                                     <div class="w-100 row mt-3">
                                         <span class ="col">全くない</span>
                                         <span class ="col text-end">とても強い</span>
@@ -185,37 +212,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="mt-3">3. 体験したフィードバックについて</div>
-                            <div>
-                                <label for="f1" class="form-label w-100 mt-3">
-                                    Q3-1: ストレス発散の効果は
-                                    <div class="w-100 row mt-3">
-                                        <span class ="col">全くない</span>
-                                        <span class ="col text-end">とても効果的</span>
-                                    </div>
-                                </label>
-                                <div class="w-100 d-flex justify-content-between mb-3">
-                                    <span><input class="form-check-input" type="radio" name="f1" value="0"></span>
-                                    <span><input class="form-check-input" type="radio" name="f1" value="1"></span>
-                                    <span><input class="form-check-input" type="radio" name="f1" value="2"></span>
-                                    <span><input class="form-check-input" type="radio" name="f1" value="3"></span>
-                                    <span><input class="form-check-input" type="radio" name="f1" value="4"></span>
-                                    <span><input class="form-check-input" type="radio" name="f1" value="5"></span>
-                                    <span><input class="form-check-input" type="radio" name="f1" value="6"></span>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="f2" class="form-label">Q3-2: この選択肢を選んだ理由</label>
-                                <textarea class="form-control" name="f2" id="f2" required></textarea>
-                                <div class="invalid-feedback">文章を入力してください。</div>
-                            </div>
-                        </div>
                     </div>
                     <div class="mt-3 row">
                         <div class="col"></div>
                         <div class="col text-end">
-                            <button type="button" id="submitButton" class="btn btn-primary w-75" onclick="Submit()" disabled>提出</button>
+                            <button type="button" class="btn btn-primary" id="submitButton" onclick="Submit()" disabled>提出</button>
                         </div>
                     </div>
                 </form>
@@ -223,6 +224,7 @@
         </main>
         <script>
             const submitButton = document.querySelector("#submitButton");
+            const endButton = document.querySelector("#endButton");
             document.querySelector(".scroll-container").addEventListener("change",()=>{
                 const myForm = document.myForm;
                 function check(name){
@@ -242,9 +244,8 @@
                 submitButton.disabled = false;
             });
             function Submit(){
-                console.log(1);
-                submitButton.disabled =true;
-                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>提出';
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>終了';
+                submitButton.disabled = true;
                 document.myForm.submit();
             }
         </script>

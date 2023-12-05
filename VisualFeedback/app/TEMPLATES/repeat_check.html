@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>VISUAL_FEEDBACK</title>
+        <meta name="description" content="tendency of visual feedback choice">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Bootstrap core CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./static/src/style.css" rel="stylesheet">
+    </head>
+    <body class="bg-faded">
+        <main class="myForm w-100 m-auto">
+            <div class="border-top border-bottom border-3 border-dark borderFrame">
+                <h1 class="mt-3 mb-3">ストレスと感情についてのアンケート</h1>
+                    <div class="mt-3 mb-3 scroll-container"></div>
+                    <button type="button" class="btn btn-primary hidden" id="controlButton" data-bs-toggle="modal" data-bs-target="#modal"></button>
+                    <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="w-100 modal-title">
+                                        <div class="fw-light">別のフィードバックも選択したい場合は<br/>再度お選びください</div>
+                                        <h5 class="mt-3">書いた内容</h5>
+                                    </div>
+                                </div>
+                                <form action="/feedback" method="post" class="was-validated">
+                                    <textarea class="hidden" name="disclosure" id="Input"></textarea>
+                                    <div class="modal-body">
+                                        <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb" value="interactive">タップして弾き飛ばす</button></div>
+                                        <div class="w-100 mb-2"><button type="sbumit" class="btn btn-primary w-100" name="fb" value="passive">傾けてバラバラにする</button></div>
+                                        <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb" value="avoidance">置いておき深呼吸をする</button></div>
+                                        <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb" value="none">何もしない</button></div>
+                                    </div>
+                                </form>
+                                <form action="/" method="post" class="was-validated">
+                                    <div class="modal-footer">
+                                        <div class="row w-100">
+                                            <div class="col"></div>
+                                            <div class="col text-end">
+                                                <button type="submit" id="endButton" class="btn btn-primary w-75">終了</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </main>
+        <script>
+            const Text = {{text|tojson}};
+            const controlButton = document.querySelector("#controlButton");
+            const Input = document.querySelector("#Input");
+            window.addEventListener("DOMContentLoaded",()=>{
+                controlButton.click();
+                Input.value = Text;
+            })
+        </script>
+        <script src="./static/src/style.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </body>
+</html>

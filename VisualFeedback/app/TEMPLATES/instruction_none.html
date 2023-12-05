@@ -15,7 +15,7 @@
             <div class="border-top border-bottom border-3 border-dark borderFrame">
                 <form action="/" method="get" class="was-validated">
                     <div>
-                        <h2 class="mt-3 fw-bold"><label for="disclosure" class="form-label">ストレス発散<br/>フィードバック</label></h2>
+                        <h2 class="mt-3 fw-bold"><label for="disclosure" class="form-label">何もしないデザインの体験ページ</label></h2>
                         
                         <textarea class="form-control" id="disclosure" rows="10" placeholder="" name="disclosure" required></textarea>
 
@@ -23,8 +23,21 @@
                             <div class="row">
                                 <div class="col"></div>
                                 <div class="col text-end">
-                                    <button type="submit" class="btn btn-primary">End</button>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal">提出</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">それぞれのフィードバックの体験は以上です。</h5>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <button class="btn btn-primary w-50 m-auto fadeIn" type="submit" id="submitButton">ホームへ戻る</button>
+                                </div>
+                                <div class="modal-footer"></div>
                             </div>
                         </div>
                     </div>

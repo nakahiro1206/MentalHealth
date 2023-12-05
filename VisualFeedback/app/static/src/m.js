@@ -43,8 +43,8 @@ class LetterBox {
 
 const vec = {x: 0, y: 0 };
 window.addEventListener("deviceorientation", function(e){
-	vec.x = Math.floor(e.gamma / 20);	// x方向の移動量: そのままでは大きい為、小さくする
-	vec.y =  Math.floor(e.beta / 20);		// y方向の移動量: そのままでは大きい為、小さくする.
+	vec.x = Math.floor(e.gamma / 50);	// x方向の移動量: そのままでは大きい為、小さくする
+	vec.y =  Math.floor(e.beta / 50);		// y方向の移動量: そのままでは大きい為、小さくする.
 }, false);
 
 // boundaries.
@@ -61,8 +61,10 @@ function myRender() {
         const radius = 15 * e.scale;
         const {x, y} = e.body.position;
         if(x<=radius || x>= wrapper_width-radius || y<=radius || y>= wrapper_height-radius){
-            e.scale *= 0.9;
-            Matter.Body.scale(e.body, 0.9, 0.9);
+            if(e.scale>=0.05){
+                e.scale *= 0.9;
+                Matter.Body.scale(e.body, 0.9, 0.9);
+            }
         }
         e.render();
     });

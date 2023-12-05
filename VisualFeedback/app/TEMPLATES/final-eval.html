@@ -26,7 +26,7 @@
                     <div class="col"><button class="btn btn-primary w-75 m-auto hidden fadeIn" type="button" onclick="back()" id="backButton">Back</button></div>
                     <div class="col text-end">
                         <button class="btn btn-primary w-75 m-auto fadeIn" type="button" onclick="next()" id="nextButton">Next</button>
-                        <button class="btn btn-primary w-75 m-auto fadeIn hidden" type="submit" id="submitButton">Submit</button>
+                        <button class="btn btn-primary w-75 m-auto fadeIn hidden" type="button" onclick="Submit()" id="submitButton" disabled>Submit</button>
                     </div>
                 </div>
             </form>
@@ -62,7 +62,9 @@
                 tmp.classList.add("hidden");
                 after.classList.remove("hidden");
             }
-            function submit(){
+            function Submit(){
+                submitButton.innerHTML='<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Submit';
+                submitButton.disabled = true;
                 document.Form.submit();
             }
             window.addEventListener("DOMContentLoaded",()=>{
@@ -75,13 +77,18 @@
                     elem.setAttribute("id", `q${i}`);
                     elem.innerHTML = `<h5>${questions[i]}</h5>
                             <div>
-                                <label for="good${i}" class="form-label">良かった点</label>
+                                <label for="good${i}" class="form-label">使っていて良いと感じたところ</label>
                                 <textarea class="form-control" name="good${i}" id="good${i}" required></textarea>
                                 <div class="invalid-feedback">文章を入力してください。</div>
                             </div>
                             <div>
-                                <label for="bad${i}" class="form-label mt-3">悪かった点</label>
+                                <label for="bad${i}" class="form-label mt-3">使っていて悪いと感じたところ</label>
                                 <textarea class="form-control" name="bad${i}" id="bad${i}" required></textarea>
+                                <div class="invalid-feedback">文章を入力してください。</div>
+                            </div>
+                            <div>
+                                <label for="sug${i}" class="form-label mt-3">ここをこうしてほしい、などの改善点</label>
+                                <textarea class="form-control" name="sug${i}" id="sug${i}" required></textarea>
                                 <div class="invalid-feedback">文章を入力してください。</div>
                             </div>
                             <div>
@@ -91,6 +98,22 @@
                             </div>`;
                     wrapper.appendChild(elem);
                 }
+
+                document.querySelector(".scroll-container").addEventListener("change",()=>{
+                    const myForm = document.Form;
+                    const questions = [];
+                    for(let i=0;i<4;i++){
+                        questions.push(`good${i}`);
+                        questions.push(`bad${i}`);
+                        questions.push(`sug${i}`);
+                        questions.push(`opp${i}`);
+                    }
+                    for(let i=0;i<questions.length;i++){
+                        const text = eval(`myForm.${questions[i]}`);
+                        if(text.value.length==0){return 0;}
+                    }
+                    submitButton.disabled = false;
+                });
             });
         </script>
         <script src="./static/src/style.js"></script>

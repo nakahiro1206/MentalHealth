@@ -53,6 +53,10 @@
                 height:30px;
                 font-size: 10px;
             }
+            #withdrawalButton{
+                height:25px;
+                font-size: 10px;
+            }
         </style>
     </head>
     <body class="bg-faded">
@@ -60,14 +64,15 @@
             <div class="border-top border-bottom border-3 border-dark borderFrame">
                 <div class="mt-3 fw-bold">「こまめなストレス発散における視覚的フィードバックの選択傾向に関する調査分析」ホームページ</div>
                 <div class="h-100 form-group mt-3 mb-3">
+                    <div class="mb-3" id="crowdworksUsername"></div>
                     <div class="w-100 d-flex justify-content-between">
                         <h5 class="fw-bold">WEEK: <span id="week">0</span></h5>
                         <form action="/instruction/0" method="get">
                             <button class="btn btn-sm btn-outline-dark btn-instruction">フィードバックの説明</button>
                         </form>
                     </div>
-                    <form action="/disclosure" method="get">
-                        
+                    <form action="/disclosure" method="post">
+                        <input class="hidden" name="p"><input class="hidden" name="l"><input class="hidden" name="c">
                         <div class="w-100 progress-container mt-3 mb-3 d-flex justify-content-between">
                             <button type="submit" class="btn btn-secondary btn-circle text-center" onclick="event.preventDefault();"><i class="bi bi-chat fs-1"></i></button>
                             <button type="submit" class="btn btn-secondary btn-circle text-center" onclick="event.preventDefault();"><i class="bi bi-chat fs-1"></i></button>
@@ -82,12 +87,14 @@
                         </div>
                     </form>
                     <span id="msg"></span>
-                    <form action="/register" method="get" class="hidden" id="registerButton">
+                    <form action="/register" method="post" class="hidden" id="registerButton">
+                        <input class="hidden" name="p"><input class="hidden" name="l"><input class="hidden" name="c">
                         <div class="mt-2">
                             <button type="submit" class="btn btn-primary">登録</button>
                         </div>
                     </form>
-                    <form action="/final-eval" method="get" class="hidden" id="finalevalButton">
+                    <form action="/final-eval" method="post" class="hidden" id="finalevalButton">
+                        <input class="hidden" name="p"><input class="hidden" name="l"><input class="hidden" name="c">
                         <div class="mt-3">
                             <button type="submit" class="btn btn-primary">答える</button>
                         </div>
@@ -106,89 +113,111 @@
         <script src="./static/src/style.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script>
+            function ChangebyProgress(progress, lastAccess,username,crowdworksUsername){
+                document.getElementsByName("p").forEach((elem)=>{elem.value=progress;})
+                document.getElementsByName("l").forEach((elem)=>{elem.value=lastAccess;})
+                document.getElementsByName("c").forEach((elem)=>{elem.value=crowdworksUsername;})
+                document.querySelector("#crowdworksUsername").innerHTML="CrowdWorksのユーザ名: "+crowdworksUsername;
+                // const progress = 28;
+                console.log("progress: " + progress)
+                const week = Math.ceil((progress + 0.5) / 7);
+                document.querySelector("#week").innerHTML=week;
+                if(progress==-2 || lastAccess==-2 || crowdworksUsername==''){
+                    // invalid access;
+                    document.querySelector("#msg").innerHTML="LINE botより送信されたリンクからアクセスしてください。<br/>";
+                    document.querySelector("#msg").classList.add("fadeIn");
+                    document.querySelector("#spinner").classList.add("hidden");
+                }
+                else if(progress==-1){
+                    document.querySelector("#msg").innerHTML="最初にCrowdWorksのユーザ名を登録し事前アンケートにお答えください。";
+                    document.querySelector("#msg").classList.add("fadeIn");
+                    document.querySelector("#registerButton").classList.remove("hidden");
+                    document.querySelector("#registerButton").classList.add("fadeIn");
+                }
+                else {
+                    if(progress>28){
+                        document.querySelector("#msg").innerHTML="研究にご協力いただきありがとうございました。LINE botを友達解除しCrowdWorksにて納品完了報告をお願いします。";
+                        document.querySelector("#msg").classList.add("fadeIn");
+                    }
+                    else if(progress==28){
+                        document.querySelector("#msg").innerHTML="最後に事後アンケートにお答えください。"
+                        document.querySelector("#msg").classList.add("fadeIn");
+                        document.querySelector("#finalevalButton").classList.remove("hidden");
+                        document.querySelector("#finalevalButton").classList.add("fadeIn");
+                    }
+                    else{
+                        const day = progress % 7;
+                        const btns = document.querySelectorAll(".btn-circle");
+                        for(let i=0;i<day;i++){
+                            btns[i].classList.remove("btn-secondary");
+                            btns[i].classList.add("btn-primary");
+                            btns[i].innerHTML='<span class="bi bi-check fs-1"></span>';
+                        }
+
+                        const d = new Date();
+                        let today5am = 0;
+                        if(d.getHours()<5){
+                          // if it's before 5am
+                          d.setDate(d.getDate()-1);
+                          today5am = (((d.getFullYear()*100 + d.getMonth()+1)*100 + d.getDate())*100 + 5)*100;
+                        }
+                        else{
+                          today5am = (((d.getFullYear()*100 + d.getMonth() +1)*100 + d.getDate())*100 + 5)*100;
+                        }
+
+                        if(progress!=0 && lastAccess>today5am){
+                            document.querySelector("#msg").innerHTML="本日の実験は実施済みです。<br/>回答ありがとうございます。<br/><br/>"
+                            document.querySelector("#msg").classList.add("fadeIn");
+                        }
+                        else{
+                            document.querySelector("#msg").innerHTML="白い吹き出しボタンをクリックして実験を開始してください";
+                            //invalid the button
+                            // span "you have already accessed"
+                            btns[day].classList.remove("btn-secondary");
+                            btns[day].classList.add("btn-light");
+                            btns[day].innerHTML='<span class="bi bi-chat-dots fs-1"></span>';
+                            btns[day].onclick = "";
+                        }
+                        const withdrawalButton = document.querySelector("#withdrawalButton");
+                        const withdrawalUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeutnzmM2YhV7HQ5AyMPRcPgjbnQaJlbLnDqKHVQBl6hS0Ddw/viewform?usp=pp_url&entry.1265895045=" + username;
+                        withdrawalButton.addEventListener("click", ()=>{location.href=`${withdrawalUrl}`;});
+                        const withdrawalFooter = document.querySelector("#withdrawalFooter");
+                        withdrawalFooter.classList.remove("hidden");
+                    }
+                }
+                document.querySelector("#spinner").classList.add("hidden");
+            }
+
+            // if empty, assigned '' or -1.
             const usernameFromSession = {{username|tojson}}; 
+            const progressFromSession = {{progress|tojson}};
+            const lastAccessFromSession = {{last_access|tojson}};
+            const crowdworksUsername = {{crowdworks_username|tojson}};
 
             window.addEventListener("load",async ()=>{
-                const tempUrl = new URL(window.location.href);
-                const usernameFromUrl = tempUrl.searchParams.get('username');
-                let username = null;
-                if(usernameFromSession != null && usernameFromSession != undefined && usernameFromSession!=''){
-                    username = usernameFromSession;
-                }
-                else if(usernameFromUrl != null && usernameFromUrl != undefined){
-                    username = usernameFromUrl;
-                }
-                console.log("username: ", username)
-                if(username == null && username == undefined) {
-                    // not registered;
+                if(usernameFromSession == '') {
+                    // invalid access;
                     document.querySelector("#msg").innerHTML="LINE botより送信されたリンクからアクセスしてください。<br/>";
                     document.querySelector("#msg").classList.add("fadeIn");
                     document.querySelector("#spinner").classList.add("hidden");
                 }
                 else{
-                    const gasUrl = "https://script.google.com/macros/s/AKfycbwb91Uo_PzP3e_8cBJeoEWlfEFjG1Sh-vPT3s31SaHULbfQN2gOmnoBCCcQJZAu0GaTKg/exec";
-                    const params = {'username': username};const query_params = new URLSearchParams(params); 
-                    fetch(`${gasUrl}?username=${username}`, {
-                        mode:'cors',
-                    })
-                    .then((res)=>{
-                        console.log(res);
-                        return( res.json() );
-                    })
-                    .then((json)=>{
-                        console.log(json.username);
-                        // how many days have been ended.
-                        // if not registered progress = -1;
-                        const progress = json.progress;
-                        // const progress = 10;
-                        console.log("progress: " + progress)
-                        const week = Math.ceil((progress + 0.5) / 7);
-                        document.querySelector("#week").innerHTML=week;
-                        if(progress<0){
-                            document.querySelector("#msg").innerHTML="最初にCrowdWorksのユーザ名を登録し事前アンケートにお答えください。";
-                            document.querySelector("#msg").classList.add("fadeIn");
-                            document.querySelector("#registerButton").classList.remove("hidden");
-                            document.querySelector("#registerButton").classList.add("fadeIn");
-                        }
-                        else {
-                            if(progress>=28){
-                                document.querySelector("#msg").innerHTML="最後に事後アンケートにお答えください。"
-                                document.querySelector("#msg").classList.add("fadeIn");
-                                document.querySelector("#finalevalButton").classList.remove("hidden");
-                                document.querySelector("#finalevalButton").classList.add("fadeIn");
-                            }
-                            else{
-                                
-                                const day = progress % 7;
-                                const btns = document.querySelectorAll(".btn-circle");
-                                for(let i=0;i<day;i++){
-                                    btns[i].classList.remove("btn-secondary");
-                                    btns[i].classList.add("btn-primary");
-                                    btns[i].innerHTML='<span class="bi bi-check fs-1"></span>';
-                                }
-
-                                if(json.todayAccess){
-                                    document.querySelector("#msg").innerHTML="本日の実験は実施済みです。<br/>回答ありがとうございます。<br/><br/>"
-                                    document.querySelector("#msg").classList.add("fadeIn");
-                                }
-                                else{
-                                    document.querySelector("#msg").innerHTML="白い吹き出しボタンをクリックして実験を開始してください";
-                                    //invalid the button
-                                    // span "you have already accessed"
-                                    btns[day].classList.remove("btn-secondary");
-                                    btns[day].classList.add("btn-light");
-                                    btns[day].innerHTML='<span class="bi bi-chat-dots fs-1"></span>';
-                                    btns[day].onclick = "";
-                                }
-                                const withdrawalButton = document.querySelector("#withdrawalButton");
-                                const withdrawalUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeutnzmM2YhV7HQ5AyMPRcPgjbnQaJlbLnDqKHVQBl6hS0Ddw/viewform?usp=pp_url&entry.1265895045=" + username;
-                                withdrawalButton.addEventListener("click", ()=>{location.href=`${withdrawalUrl}`;});
-                                const withdrawalFooter = document.querySelector("#withdrawalFooter");
-                                withdrawalFooter.classList.remove("hidden");
-                            }
-                        }
-                        document.querySelector("#spinner").classList.add("hidden");
-                    });
+                    console.log(progressFromSession,lastAccessFromSession, crowdworksUsername)
+                    if(progressFromSession==-2 || lastAccessFromSession==-2 || crowdworksUsername==''){
+                        const gasUrl = "https://script.google.com/macros/s/AKfycbwb91Uo_PzP3e_8cBJeoEWlfEFjG1Sh-vPT3s31SaHULbfQN2gOmnoBCCcQJZAu0GaTKg/exec";
+                        fetch(`${gasUrl}?username=${usernameFromSession}`, {
+                            mode:'cors',
+                        })
+                        .then((res)=>{
+                            console.log(res);
+                            return( res.json() );
+                        })
+                        .then((json)=>{
+                            console.log(json);
+                            ChangebyProgress(json.progress, json.lastAccess,json.username, json.crowdworksUsername);
+                        });
+                    }
+                    else{ChangebyProgress(progressFromSession, lastAccessFromSession,usernameFromSession,crowdworksUsername)}
                 }
             });
         </script>
