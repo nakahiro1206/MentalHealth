@@ -46,95 +46,82 @@ class Circle {
     };
 };
 
-let state = -1; // -1 means not started.
-const inflate = new Array(circle_num);
-const deflate = new Array(circle_num);
+let startTime = -1;
+let state = 0; // 0: moving, 1: stop
 const Ratio = new Array(circle_num);
-const inflate_time = 240;
-const vibrate_time = 180;
-const deflate_time = 240;
+const inflate_time = 4000;
+const vibrate_time = 6000;
+const deflate_time = 7000;
 const inflate_ratio = Math.sqrt(3 * wrapper_height * wrapper_width / radius /radius / 4 /circle_num);
 for(let i=0;i<circle_num;i++){
-    const ratio = Math.random()*inflate_ratio;
-    inflate[i] = ratio/inflate_time;
-    deflate[i] = (1/ratio)/deflate_time;
-    Ratio[i] = ratio;
+    Ratio[i] = Math.random()*inflate_ratio;
 }
 
 function myRender() {
     Matter.Engine.update(engine);
-    if(state<0){
+    if(state==0){
         // return to initial state
-        if(instruction.innerHTML != "画面を長押し"){
-            instruction.innerHTML = "画面を長押し";
-            CircleArray.forEach((e, i)=>{
-                e.elem.style.background = null;
-            });
-        }
-        state = -2;
+        instruction.innerHTML = "画面を長押し";
         CircleArray.forEach((e)=>{
+            e.elem.style.background = null;
             const scale = 1/ e.scale;
             Matter.Body.scale(e.body, scale,scale);
             e.scale = 1;
             e.render();
         });
     }
-    else if(state < inflate_time){
-        if(state==0){
-            instruction.innerHTML = "息を吸って";
-            for(let i=0;i<circle_num;i++){
-                const ratio = Math.random()*inflate_ratio;
-                inflate[i] = ratio/inflate_time;
-                deflate[i] = (1/ratio)/deflate_time;
-                Ratio[i] = ratio;
-            }
+    else{
+        const progressTime = new Date().getTime() - startTime;
+        if(progressTime < inflate_time){
+            CircleArray.forEach((e, i)=>{
+                // Matter.Body.scale(e.body, inflate[i], inflate[i]);
+                // e.scale *= inflate[i];
+                const ratio = 1+ (Ratio[i]-1)/inflate_time * progressTime;
+                const ratioBefore = e.scale;
+                Matter.Body.scale(e.body, ratio/ratioBefore, ratio/ratioBefore);
+                e.scale = ratio;
+                e.render();
+            });
         }
-        CircleArray.forEach((e, i)=>{
-            // Matter.Body.scale(e.body, inflate[i], inflate[i]);
-            // e.scale *= inflate[i];
-            const ratio = 1+ (Ratio[i]-1)/inflate_time * (state +1);
-            const ratioBefore = 1+ (Ratio[i]-1)/inflate_time * state;
-            Matter.Body.scale(e.body, ratio/ratioBefore, ratio/ratioBefore);
-            e.scale = ratio;
-            e.render();
-        });
-    }
-    else if(state < inflate_time + vibrate_time){
-        const procedure = (state - inflate_time)%120;
-        if(state == inflate_time){
-            instruction.innerHTML = "息を止めて";
+        else if(progressTime < inflate_time + vibrate_time){
+            const procedure = (progressTime - inflate_time)%2000;
+            if(instruction.innerHTML != "息を止めて"){instruction.innerHTML = "息を止めて";}
+            const scaleInstruction = 1 - 0.2 * Math.min(procedure, 2000-procedure) / 2000;
+            instruction.style.transform = `scale(${scaleInstruction}, ${scaleInstruction})`;
+            CircleArray.forEach((e, i)=>{
+                const arg = 360 * (progressTime - inflate_time) / vibrate_time;
+                e.elem.style.background = `radial-gradient(circle at center, #a9ceec 50%, rgba(0, 0, 0, 0) 100%), conic-gradient(#4169E1 ${arg}deg, #a9ceec ${arg}deg 360deg)`;
+                e.render();
+            });
+        }
+        else if(progressTime < inflate_time + vibrate_time + deflate_time){
+            if(instruction.innerHTML != "息を吐いて"){instruction.innerHTML = "息を吐いて";}
+            CircleArray.forEach((e, i)=>{
+                // Matter.Body.scale(e.body, deflate[i], deflate[i]);
+                // e.scale *= deflate[i];
+                const ratio = Ratio[i] - (Ratio[i]-1)/deflate_time * (progressTime - inflate_time -vibrate_time);
+                const ratioBefore = e.scale;
+                Matter.Body.scale(e.body, ratio/ratioBefore, ratio/ratioBefore);
+                e.scale = ratio;
+                e.render();
+            });
         }
         else{
-            const scaleInstruction = 1 - 0.2 * Math.min(procedure, 120-procedure) / 120;
-            instruction.style.transform = `scale(${scaleInstruction}, ${scaleInstruction})`;
+            // return to initial state
+            instruction.innerHTML = "画面を長押し";
+            CircleArray.forEach((e, i)=>{
+                e.elem.style.background = null;
+                const scale = 1/ e.scale;
+                Matter.Body.scale(e.body, scale,scale);
+                e.scale = 1;
+                e.render();
+            });
+            for(let i=0;i<circle_num;i++){
+                Ratio[i] = Math.random()*inflate_ratio;
+            }
+            startTime = new Date().getTime();
         }
-        CircleArray.forEach((e, i)=>{
-            const arg = 360 * (state +1 - inflate_time) / vibrate_time;
-            e.elem.style.background = `radial-gradient(circle at center, #a9ceec 50%, rgba(0, 0, 0, 0) 100%), conic-gradient(#4169E1 ${arg}deg, #a9ceec ${arg}deg 360deg)`;
-            e.render();
-        });
     }
-    else if(state < inflate_time + vibrate_time + deflate_time){
-        if(state == inflate_time + vibrate_time){
-            instruction.innerHTML = "息を吐いて";
-        }
-        CircleArray.forEach((e, i)=>{
-            // Matter.Body.scale(e.body, deflate[i], deflate[i]);
-            // e.scale *= deflate[i];
-            const ratio = Ratio[i] - (Ratio[i]-1)/deflate_time * (state +1 - inflate_time -vibrate_time);
-            const ratioBefore = Ratio[i] - (Ratio[i]-1)/deflate_time * (state - inflate_time -vibrate_time);
-            Matter.Body.scale(e.body, ratio/ratioBefore, ratio/ratioBefore);
-            e.scale = ratio;
-            e.render();
-        });
-    }
-    else{
-        CircleArray.forEach((e, i)=>{
-            e.elem.style.background = null;
-        });
-        state = -1;
-    }
-    state++;
     requestAnimationFrame(myRender);
 }
 
@@ -162,11 +149,17 @@ for(let i=0;i<circle_num;i++){
     World.add(world, circle.body);
 }
 wrapper.addEventListener("touchstart", (event)=>{
-    state=0;
+    state=1;
+    instruction.innerHTML = "息を吸って";
+    for(let i=0;i<circle_num;i++){
+        Ratio[i] = Math.random()*inflate_ratio;
+    }
+    startTime = new Date().getTime();
 });
 wrapper.addEventListener("touchend", (event)=>{
     // alert(0);
-    state=-1;
+    state=0;
+    startTime = -1;
 });
 
 myRender();

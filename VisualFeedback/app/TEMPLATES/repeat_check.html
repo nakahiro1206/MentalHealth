@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>VISUAL_FEEDBACK</title>
+        <title>「こまめなストレス発散における視覚的フィードバックの選択傾向に関する調査分析」調査用ページ</title>
         <meta name="description" content="tendency of visual feedback choice">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -27,12 +27,7 @@
                                 </div>
                                 <form action="/feedback" method="post" class="was-validated">
                                     <textarea class="hidden" name="disclosure" id="Input"></textarea>
-                                    <div class="modal-body">
-                                        <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb" value="interactive">タップして弾き飛ばす</button></div>
-                                        <div class="w-100 mb-2"><button type="sbumit" class="btn btn-primary w-100" name="fb" value="passive">傾けてバラバラにする</button></div>
-                                        <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb" value="avoidance">置いておき深呼吸をする</button></div>
-                                        <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb" value="none">何もしない</button></div>
-                                    </div>
+                                    <div class="modal-body"></div>
                                 </form>
                                 <form action="/" method="post" class="was-validated">
                                     <div class="modal-footer">
@@ -51,11 +46,18 @@
         </main>
         <script>
             const Text = {{text|tojson}};
+            const fbList = {{fb_list|tojson}};
             const controlButton = document.querySelector("#controlButton");
             const Input = document.querySelector("#Input");
             window.addEventListener("DOMContentLoaded",()=>{
                 controlButton.click();
                 Input.value = Text;
+                let content = '';
+                const d = {"interactive": "をタップして弾き飛ばす","passive":"がバラバラになって消える","none":"に何もしない", "avoidance":"を置いておき深呼吸をする"};
+                fbList.forEach((elem) => {
+                    content+= `<div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb" value=${elem}>${d[elem]}</button></div>`;
+                });
+                document.querySelector(".modal-body").innerHTML=content;
             })
         </script>
         <script src="./static/src/style.js"></script>

@@ -17,7 +17,7 @@ function changeView(idToHidden){
             nextButton.innerHTML="提出";
             nextButton.classList.remove("hidden");
             console.log("state==length");
-            nextButton.onclick = submit;
+            nextButton.onclick = Submit;
             submissionOK = true;
             state--;
         }
@@ -61,7 +61,7 @@ function changeView(idToHidden){
                 if(document.getElementById(`q${state}`)!=null){
                     nextButton.innerHTML="提出";
                     nextButton.classList.remove("hidden");
-                    nextButton.onclick = submit;
+                    nextButton.onclick = Submit;
                 }
             }
         }
@@ -96,7 +96,7 @@ function next(){
             nextButton.innerHTML="提出";
             nextButton.classList.remove("hidden");
             console.log("state==length");
-            nextButton.onclick = submit;
+            nextButton.onclick = Submit;
             state--;
         }
         else{
@@ -116,14 +116,14 @@ function next(){
                 if(document.getElementById(`q${state}`)!=null && submissionOK){
                     nextButton.innerHTML="提出";
                     nextButton.classList.remove("hidden");
-                    nextButton.onclick = submit;
+                    nextButton.onclick = Submit;
                 }
             }
         }
     },200);
 }
 
-function submit(){
+function Submit(){
     nextButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>提出';
     nextButton.disabled = true;
     document.Form.submit();

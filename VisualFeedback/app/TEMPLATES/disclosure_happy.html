@@ -21,11 +21,11 @@
     <body class="bg-faded">
         <main class="myForm w-100 m-auto ">
             <div class="border-top border-bottom border-3 border-dark borderFrame">
-                <form action="/feedback" method="post" class="was-validated">
+                <form action="/" method="post" name="myForm" class="was-validated">
                     <div>
-                        <h2 class="mt-3 fw-bold"><label for="disclosure" class="form-label">今日ストレスに感じたことを記入してください。</label></h2>
+                        <h2 class="mt-3 fw-bold"><label for="disclosure" class="form-label">今日幸せに感じたことを記入してください。</label></h2>
                         
-                        <textarea class="form-control" id="disclosure" rows="10" placeholder="" name="disclosure" required></textarea>
+                        <textarea class="form-control" id="disclosure" rows="10" placeholder="" name="disclosure_happy" required></textarea>
 
                         <div class="form-group mt-3 mb-3">
                             <div class="row">
@@ -33,7 +33,6 @@
                                     <button type="reset" class="btn btn-danger" onclick="document.getElementById('disclosure').value = ''">リセット</button>
                                 </div>
                                 <div class="col text-end">
-                                    <button type="submit" class="btn btn-primary hidden" id="submitButton">提出</button>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" id="modalButton">提出</button>
                                 </div>
                             </div>
@@ -45,17 +44,16 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <div class="w-100 modal-title">
-                                        <div class="fw-light">使いたいと感じるフィードバックを選んでください</div>
-                                        <h5 class="mt-3 text-primary">書いた内容</h5>
+                                        ご回答ありがとうございます。
                                     </div>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb"></button></div>
-                                    <div class="w-100 mb-2"><button type="sbumit" class="btn btn-primary w-100" name="fb"></button></div>
-                                    <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb"></button></div>
-                                    <div class="w-100 mb-2"><button type="submit" class="btn btn-primary w-100" name="fb"></button></div>
+                                <!-- <div class="modal-body"></div> -->
+                                <div class="modal-footer">
+                                    <div class="row w-100">
+                                        <div class="col"></div>
+                                        <div class="col"><button type="submit" class="btn btn-primary w-75" onclick="Submit()">終了</button></div>
+                                    </div>
                                 </div>
-                                <div class="modal-footer"></div>
                             </div>
                         </div>
                     </div>
@@ -63,17 +61,11 @@
             </div>
         </main>
         <script>
-            const Progress = {{progress|tojson}};
-            const fbList = {{fb_list|tojson}};
-            const d = {"interactive": "をタップして弾き飛ばす","passive":"がバラバラになって消える","none":"に何もしない", "avoidance":"を置いておき深呼吸をする"};
-            if(Progress<3){
-                document.querySelector("#submitButton").classList.remove("hidden");
-                document.querySelector("#modalButton").classList.add("hidden");
-            }
-            const elemList = document.getElementsByName("fb");
-            for(let i=0;i<4;i++){
-                elemList[i].value = fbList[i];
-                elemList[i].innerHTML = d[fbList[i]];
+            function Submit(){
+                const submitButton = document.querySelector("#submitButton");
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>終了';
+                document.myForm.submit();
             }
         </script>
         <script src="./static/src/style.js"></script>

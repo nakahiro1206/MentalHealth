@@ -4,6 +4,7 @@ from google.oauth2.service_account import Credentials
 import gspread
 import datetime
 import itertools
+import random
 
 app = Flask(__name__, static_folder="static", template_folder="TEMPLATES")
 app.secret_key = "secret"
@@ -37,32 +38,47 @@ def index():
     if(request.method=="GET"):
         # username
         username = ""
-        if(request.args.get("username") is not None):
-            username = request.args.get("username")
-        if((username=="") and ("username" in session)):
-            username = session["username"]
-        session["username"] = username
-        # progress
-        progress = -1
-        if("progress" in session): progress = session["progress"]
-        session["progress"] = progress
-        # crowdworks name
+        progress = -2
         crowdworks_username = ""
-        if("crowdworks_username" in session):crowdworks_username=session["crowdworks_username"]
-        session["crowdworks_username"]=crowdworks_username
-        # last access
-        last_access = -1
-        if("last_access" in session): last_access = session["last_access"]
+        last_access = -2
+
+        if("username" not in session):
+            if(request.args.get("username") is not None):
+                username = request.args.get("username")
+        else:
+            if(request.args.get("username") is not None):
+                username = request.args.get("username")
+                if(username == session["username"]):
+                    # progress
+                    if("progress" in session): progress = session["progress"]
+                    # crowdworks name
+                    if("crowdworks_username" in session):crowdworks_username=session["crowdworks_username"]
+                    # last access
+                    if("last_access" in session): last_access = session["last_access"]
+            else:
+                username = session["username"]
+                # progress
+                if("progress" in session): progress = session["progress"]
+                # crowdworks name
+                if("crowdworks_username" in session):crowdworks_username=session["crowdworks_username"]
+                # last access
+                if("last_access" in session): last_access = session["last_access"]
+        session["username"] = username
+        session["progress"] = progress
         session["last_access"] = last_access
+        session["crowdworks_username"]=crowdworks_username
+        print(session["last_access"])
         # render template
         return render_template("index.html", username=username, progress=progress, 
                                crowdworks_username=crowdworks_username,last_access=last_access)
+    
     elif(request.method=="POST"):
         if('username' not in session):return redirect(url_for('index'))
         spreadsheet = open_gs()
         userlist = spreadsheet.worksheet("userlist")
         hash_list = userlist.row_values(1)
         idx = hash_list.index(session["username"])
+        user_sheet = spreadsheet.worksheet("P"+str(idx))
         # increment progress.
         progress = int(userlist.cell(3,idx+1).value)
         session["progress"] = progress+1
@@ -91,8 +107,6 @@ def index():
             for i in range(len(register_list)):
                 register_cells[i].value=register_list[i]
             userlist.update_cells(register_cells)
-
-            user_sheet = spreadsheet.worksheet("P"+str(idx))
             label = ["timestamp","disclosure","choice","effectiveness","choice reason","stress level","stress difficulty","stress self fault","anger","sadness","fear","ashame","tiredness"]
             user_sheet.append_row(label)
             return redirect(url_for('index'))
@@ -121,6 +135,9 @@ def index():
             print(comments)
             userlist.update_cells(comment_cells)
             return redirect(url_for('index'))
+        elif(request.form.get("disclosure_happy") is not None):
+            user_sheet.append_row([date_str, request.form.get("disclosure_happy")])
+            return redirect(url_for('index'))
         else:
             #  from repeat_check -> index
             return redirect(url_for('index'))
@@ -141,7 +158,7 @@ def disclosure():
     if 'username' in session:
         fb_list = ["interactive","passive","avoidance","none"]
         group = int(session["username"][0:2])
-        fb_list = list(itertools.permutations(fb_list))[group]
+        fb_list = list(list(itertools.permutations(fb_list))[group])
         session["fb_list"] = fb_list
         session["progress"]=request.form["p"]
         session["lastAccess"]=request.form["l"]
@@ -149,7 +166,16 @@ def disclosure():
         return render_template('disclosure.html', progress=session["progress"], fb_list=fb_list)
     else:
         return redirect(url_for('index'))
-
+    
+@app.route('/disclosure_happy', methods=["POST"])
+def disclosure_happy():
+    if 'username' in session:
+        session["progress"]=request.form["p"]
+        session["lastAccess"]=request.form["l"]
+        session["crowdworks_username"]=request.form["c"]
+        return render_template('disclosure_happy.html')
+    else:
+        return redirect(url_for('index'))
 
 @app.route('/post-eval', methods=["GET"])
 def postEval():
@@ -174,28 +200,55 @@ def feedback():
         session["disclosure"] = request.form["disclosure"]
         # interactive, passive, avoidance.
         if(request.form.get("fb") is None):
-            return redirect(url_for('instruction',number=0))
+            return redirect(url_for('instruction'))
         fb_choice = request.form["fb"];
         session["fb_choice"] = fb_choice;
-        if(fb_choice == "interactive"): return render_template('explosion.html', text=session['disclosure'])
-        elif(fb_choice == "passive"): return render_template('distortion.html', text=session['disclosure'])
-        elif(fb_choice == "avoidance"): return render_template('avoidance.html', text=session['disclosure'])
-        elif(fb_choice == "none"): return render_template('none.html', text=session['disclosure'])
-        else: return fb_choice+" is not in feedback list."
+        d = {"interactive":"explosion.html","passive":"distortion.html","avoidance":"avoidance.html","none":"none.html"}
+        page = d[fb_choice]
+        l = list(session["fb_list"])
+        l.remove(fb_choice)
+        session["fb_list"]=l
+        print(session["fb_list"])
+        return render_template(page, text=session['disclosure'])
     else:
         return redirect(url_for('index'))
     
-@app.route('/instruction/<int:number>', methods=["GET"])
-def instruction(number):
+@app.route('/instruction', methods=["GET"])
+def instruction():
+    print(session["fb_list"])
+    number = len(session["fb_list"])
     if('username' not in session):return redirect(url_for('index'))
-    if(number==0):return render_template("instruction_explosion.html",text="TEST")
-    elif(number==1):return render_template("instruction_distortion.html",text="TEST")
-    elif(number==2):return render_template("instruction_avoidance.html")
-    elif(number==3):return render_template("instruction_none.html",text="TEST")
+    d = {"interactive":"instruction_explosion.html","passive":"instruction_distortion.html","avoidance":"instruction_avoidance.html","none":"instruction_none.html"}
+    if(number==4):
+        l = list(session["fb_list"])
+        random.shuffle(l)
+        session["fb_list"] = l
+    if(number>0):
+        page = d[session["fb_list"][0]]
+        session["fb_list"] = session["fb_list"][1:]
+        print(session["fb_list"])
+        print(page)
+        # session: fb_listを短くしていくスタイル。instructionはループさせる。
+        return render_template(page,text=session["disclosure"])
     else:
-        if(session["progress"]==3):
-            return render_template("instruction_check.html")
-        else:return redirect(url_for('index'))
+        # number<=0 
+        if(int(session["progress"])==2):
+            return render_template("instruction_check.html",text=session["disclosure"])
+        else:
+            spreadsheet = open_gs()
+            userlist = spreadsheet.worksheet("userlist")
+            hash_list = userlist.row_values(1)
+            idx = hash_list.index(session["username"])
+            # increment progress.
+            progress = int(userlist.cell(3,idx+1).value)
+            session["progress"] = progress+1
+            userlist.update_cell(3,idx+1,progress+1)
+            d = datetime.datetime.today()
+            # YYYYMMDDHHMM
+            date_str = str(d.year).zfill(4) + str(d.month).zfill(2) + str(d.day).zfill(2) + str(d.hour).zfill(2) + str(d.minute).zfill(2);
+            userlist.update_cell(4,idx+1,date_str)
+            session["last_access"] = int(date_str)
+            return redirect(url_for('index'))
 
 @app.route("/repeat_check", methods=["POST"])
 def repeat_check():
@@ -228,7 +281,7 @@ def repeat_check():
                             stress_diff, 
                             stress_self_fault, 
                             anger, sadness, fear, ashame, tiredness])
-    return render_template("repeat_check.html", text = session["disclosure"])
+    return render_template("repeat_check.html", text = session["disclosure"], fb_list=session["fb_list"])
 
 if __name__ == "__main__":
     # print (app.url_map)
