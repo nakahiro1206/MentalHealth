@@ -22,10 +22,16 @@
             .bd-callout{
                 border-left: 0.25rem solid #c0c0c0;
                 background-color: #f0f0f0;
-                padding: 1.25rem;
+                padding: 1rem;
             }
-            .inlineForm{
-                display:inline;
+            .mini{
+                font-size: 0.75rem;
+            }
+            .big{
+                font-size: 2rem;
+            }
+            .btn-emoji{
+                padding: 0;
             }
         </style>
     </head>
@@ -33,27 +39,29 @@
         <main class="myForm w-100 m-auto">
             <div class="border-top border-bottom border-3 border-dark borderFrame">
                 <div class="mt-3 fw-bold">「こまめなストレス発散における視覚的フィードバックの選択傾向に関する調査分析」ホームページ</div>
-                <div class="h-100 form-group mt-3 mb-3">
-                    <div class="mb-1 fs-6">
-                        実験参加者のユーザ名: <span class="fst-italic" id="crowdworksUsername"></span>
+                <div class="h-100 form-group mt-1 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <div class="fw-bold mini">
+                            Day: <span id="day"></span>
+                        </div>
+                        <div class="mini">
+                            ユーザ名: <span class="fst-italic" id="crowdworksUsername"></span>
+                        </div>
                     </div>
-                    <div class="w-100">
-                        <h5 class="fw-bold">Day: <span id="day"></span></h5>
-                    </div>
-                    <div class="mt-3 mb-5">
+                    <div class="mt-1 mb-3">
                         <input class="hidden" name="p"><input class="hidden" name="l"><input class="hidden" name="c">
                         <div class="mb-1">今日ストレスに感じたことがあれば右、そうでなければ左の顔文字をタップしてください。</div>
                         <div class="row">
                             <div class="col w-100 text-center">
                                 <form action="/disclosure_happy" method="post">
                                     <input class="hidden" name="p"><input class="hidden" name="l"><input class="hidden" name="c">
-                                    <button type="submit" class="btn btn-success w-75" id="happyButton" disabled><i class="bi bi-emoji-laughing fs-1"></i></button>
+                                    <button type="submit" class="btn btn-emoji btn-success w-50" id="happyButton" disabled><i class="bi bi-emoji-laughing big"></i></button>
                                 </form>
                             </div>
                             <div class="col w-100 text-center">
                                 <form action="/disclosure" method="post">
                                     <input class="hidden" name="p"><input class="hidden" name="l"><input class="hidden" name="c">
-                                    <button type="submit" class="btn btn-danger w-75" id="disclosureButton" disabled><i class="bi bi-emoji-frown fs-1"></i></button>
+                                    <button type="submit" class="btn btn-emoji btn-danger w-50" id="disclosureButton" disabled><i class="bi bi-emoji-frown big"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -74,7 +82,7 @@
                         </form>
                     </div>
                     <footer class="mb-3 hidden fadeIn" id="withdrawalFooter">
-                        <span class="fs-6 fw-lighter">実験の同意撤回を希望の際は実験中止ボタンを押してください。</span>
+                        <span class="mini fw-lighter">実験の同意撤回を希望の際は実験中止ボタンを押してください。</span>
                         <button type="submit" class="btn btn-sm btn-link" id="withdrawalButton">実験中止<i class="bi bi-box-arrow-up-right ms-1"></i></button>
                     </footer>
                 </div>
@@ -88,11 +96,11 @@
                 document.getElementsByName("l").forEach((elem)=>{elem.value=lastAccess;})
                 document.getElementsByName("c").forEach((elem)=>{elem.value=crowdworksUsername;})
                 document.querySelector("#crowdworksUsername").innerHTML=crowdworksUsername;
-                progress = 5;
                 console.log("progress: " + progress)
                 const day = document.querySelector("#day");
                 day.innerHTML=progress+1;
                 const msg = document.querySelector("#msg");
+                // progress=-1;
 
                 const d = new Date();
                 let today5am = 0;
