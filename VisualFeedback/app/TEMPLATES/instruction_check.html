@@ -36,21 +36,32 @@
                             <textarea class="form-control" rows="1" name="ch3" id="ch3" required></textarea>
                             <div class="invalid-feedback">文章を入力してください。</div>
                         </div>
-                    </div>
-                    <div class="row w-100">
-                        <div class="col"></div>
-                        <div class="col text-end">
-                            <button class="btn btn-primary w-75 m-auto fadeIn" type="submit" id="submitButton" onclick="Submit()">提出</button>
+                        <div class="row w-100 m-auto mt-3">
+                            <div class="col"></div>
+                            <div class="col text-end">
+                                <button class="btn btn-primary m-auto fadeIn" type="button" id="submitButton" onclick="Submit()" disabled>提出</button>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
         </main>
         <script>
-            const Text = {{text|tojson}};
-            document.querySelector("#disclosure").value = Text;
+            const submitButton = document.querySelector("#submitButton");
+            document.querySelector(".scroll-container").addEventListener("change",()=>{
+                const idList = ["ch0","ch1","ch2","ch3"];
+                let flag = true;
+                idList.forEach((elem)=>{
+                    console.log(document.getElementById(elem).value=='');
+                    if(document.getElementById(elem).value==''){
+                        flag=false;
+                        return;
+                    }
+                })
+                if(flag){submitButton.disabled = false;}
+            });
             function Submit(){
-                const submitButton = document.querySelector("#submitButton").innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>提出';
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>提出';
                 submitButton.disabled = true;
                 document.myForm.submit();
             }

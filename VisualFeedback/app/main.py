@@ -206,7 +206,7 @@ def feedback():
         d = {"interactive":"explosion.html","passive":"distortion.html","avoidance":"avoidance.html","none":"none.html"}
         page = d[fb_choice]
         l = list(session["fb_list"])
-        l.remove(fb_choice)
+        if(fb_choice in l): l.remove(fb_choice)
         session["fb_list"]=l
         print(session["fb_list"])
         return render_template(page, text=session['disclosure'])
@@ -233,7 +233,7 @@ def instruction():
     else:
         # number<=0 
         if(int(session["progress"])==2):
-            return render_template("instruction_check.html",text=session["disclosure"])
+            return render_template("instruction_check.html")
         else:
             spreadsheet = open_gs()
             userlist = spreadsheet.worksheet("userlist")

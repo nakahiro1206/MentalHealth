@@ -13,6 +13,9 @@
             textarea{
                 height:10vh;
             }
+            /* body{
+                background-color: cornflowerblue;
+            } */
         </style>
     </head>
     <body class="bg-faded myForm w-100 m-auto">
@@ -20,13 +23,13 @@
             <form action="/" method="post" name="Form">
                 <h3 class="mt-3 fw-bold">それぞれのデザインについてのアンケートにお答えください</h3>
                 <div class="mt-3 mb-3 scroll-container">
-                    <div id="wrapper"></div>
-                </div>
-                <div class="mt-3 row">
-                    <div class="col"><button class="btn btn-primary w-75 m-auto hidden fadeIn" type="button" onclick="back()" id="backButton">Back</button></div>
-                    <div class="col text-end">
-                        <button class="btn btn-primary w-75 m-auto fadeIn" type="button" onclick="next()" id="nextButton">Next</button>
-                        <button class="btn btn-primary w-75 m-auto fadeIn hidden" type="button" onclick="Submit()" id="submitButton" disabled>Submit</button>
+                    <div id="wrapper" style="width:90%;" class="m-auto"></div>
+                    <div style="width:90%;" class="mt-3 row m-auto">
+                        <div class="col"><button class="btn btn-primary w-75 m-auto hidden fadeIn" type="button" onclick="back()" id="backButton">Back</button></div>
+                        <div class="col text-end">
+                            <button class="btn btn-primary m-auto fadeIn" type="button" onclick="next()" id="nextButton">Next</button>
+                            <button class="btn btn-primary m-auto fadeIn hidden" type="button" onclick="Submit()" id="submitButton" disabled>Submit</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -69,7 +72,7 @@
             }
             window.addEventListener("DOMContentLoaded",()=>{
                 const wrapper = document.querySelector("#wrapper");
-                const questions = ["1: タップして弾き飛ばすデザイン", "2: バラバラになって消えるデザイン", "3: 置いておき深呼吸をするデザイン", "4: 何もしない"];
+                const questions = ["1: タップして弾き飛ばすデザイン", "2: バラバラになって消えるデザイン", "3: 置いておき深呼吸をするデザイン", "4: 何もしないデザイン"];
                 for(let i=0;i<questions.length;i++){
                     const elem = document.createElement("div");
                     if(i==0){elem.setAttribute("class", "mt-3 mb-3 was-validated fadeIn");}

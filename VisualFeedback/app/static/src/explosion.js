@@ -84,6 +84,9 @@ window.addEventListener("DOMContentLoaded",()=>{
             centerX = radius;
             centerY+=radius*2;
         }
+        if(centerY>=wrapper_height-radius){
+            centerY = radius;
+        }
         LetterBoxArray.push(box);
         World.add(world, box.body);
     }
