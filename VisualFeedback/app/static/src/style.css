@@ -11,6 +11,8 @@
 .scroll-container{
     overflow-y: scroll;
     overflow-x: visible;
+    border: solid 1px #cdcdcd;
+    border-radius: 0.25rem;
 }
 .hidden{
     display:none;

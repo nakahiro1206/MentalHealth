@@ -160,6 +160,7 @@ def disclosure():
         group = int(session["username"][0:2])
         fb_list = list(list(itertools.permutations(fb_list))[group])
         session["fb_list"] = fb_list
+        session["questions"] = ["" for i in range(8)]
         session["progress"]=request.form["p"]
         session["lastAccess"]=request.form["l"]
         session["crowdworks_username"]=request.form["c"]
@@ -180,7 +181,7 @@ def disclosure_happy():
 @app.route('/post-eval', methods=["GET"])
 def postEval():
     if 'username' in session:
-        return render_template('post-eval.html')
+        return render_template('post-eval.html', questions=session["questions"])
     else:
         return redirect(url_for('index'))
     
@@ -262,6 +263,10 @@ def repeat_check():
     fear = request.form["e3"]
     ashame = request.form["e4"]
     tiredness = request.form["e5"]
+    session["questions"] = [stress_level, 
+                            stress_diff, 
+                            stress_self_fault, 
+                            anger, sadness, fear, ashame, tiredness]
     effectiveness = request.form["f1"]
     comment = request.form["f2"]
     spreadsheet = open_gs()
@@ -274,13 +279,10 @@ def repeat_check():
     date_str = str(d.year).zfill(4) + str(d.month).zfill(2) + str(d.day).zfill(2) + str(d.hour).zfill(2) + str(d.minute).zfill(2);
     user_sheet.append_row([date_str, 
                             session["disclosure"], 
-                            session["fb_choice"], 
+                            session["fb_choice"],
                             effectiveness, 
-                            comment, 
-                            stress_level, 
-                            stress_diff, 
-                            stress_self_fault, 
-                            anger, sadness, fear, ashame, tiredness])
+                            comment]
+                            +session["questions"])
     return render_template("repeat_check.html", text = session["disclosure"], fb_list=session["fb_list"])
 
 if __name__ == "__main__":

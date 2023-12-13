@@ -225,6 +225,16 @@
             </div>
         </main>
         <script>
+            const Questions = {{questions|tojson}};
+            const radioQuestionsId = ["q1","q2","q3","e1","e2","e3","e4","e5"];
+            for(let i=0;i<radioQuestionsId.length;i++){
+                const name = radioQuestionsId[i];
+                const val = Questions[i];
+                if(val==""){continue;}
+                const myForm = document.myForm;
+                const List = eval(`myForm.${name}`);
+                List[Number(val)].checked = true;
+            };
             const submitButton = document.querySelector("#submitButton");
             const endButton = document.querySelector("#endButton");
             document.querySelector(".scroll-container").addEventListener("change",()=>{
