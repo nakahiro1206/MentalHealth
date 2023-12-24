@@ -43,8 +43,8 @@ class LetterBox {
 
 const vec = {x: 0, y: 0 };
 window.addEventListener("deviceorientation", function(e){
-	vec.x = Math.floor(e.gamma / 50);	// x方向の移動量: そのままでは大きい為、小さくする
-	vec.y =  Math.floor(e.beta / 50);		// y方向の移動量: そのままでは大きい為、小さくする.
+	vec.x = Math.floor(e.gamma / 20);	// x方向の移動量: そのままでは大きい為、小さくする
+	vec.y =  Math.floor(e.beta / 20);		// y方向の移動量: そのままでは大きい為、小さくする.
 }, false);
 
 // boundaries.
