@@ -103,15 +103,14 @@
                 // progress=-1;
 
                 const d = new Date();
-                let today5am = 0;
                 if(d.getHours()<5){
                     // if it's before 5am
                     d.setDate(d.getDate()-1);
-                    today5am = (((d.getFullYear()*100 + d.getMonth()+1)*100 + d.getDate())*100 + 5)*100;
                 }
-                else{
-                    today5am = (((d.getFullYear()*100 + d.getMonth() +1)*100 + d.getDate())*100 + 5)*100;
-                }
+                // set to 5 am.
+                d.setHours(5); d.setMinutes(0);
+                // UTC.
+                const today5am = (((d.getUTCFullYear()*100 + d.getUTCMonth()+1)*100 + d.getUTCDate())*100 + d.getUTCHours())*100;
 
                 if(progress==-2 || lastAccess==-2){
                     // invalid access;
@@ -183,6 +182,7 @@
                         })
                         .then((json)=>{
                             console.log(json);
+                            // already access: 1, yet: 0;
                             ChangebyProgress(json.progress, json.lastAccess,json.username, json.crowdworksUsername);
                         });
                     }

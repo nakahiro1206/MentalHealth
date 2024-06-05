@@ -28,12 +28,12 @@
                                     <textarea class="hidden" name="disclosure" id="Input"></textarea>
                                     <div class="modal-body"></div>
                                 </form>
-                                <form action="/" method="post" class="was-validated">
+                                <form action="/" method="post" class="was-validated" name="endButton">
                                     <div class="modal-footer">
                                         <div class="row w-100">
                                             <div class="col"></div>
                                             <div class="col text-end">
-                                                <button type="submit" id="endButton" class="btn btn-primary w-75">終了</button>
+                                                <button type="button" id="endButton" class="btn btn-primary w-75" onclick="Submit()">終了</button>
                                             </div>
                                         </div>
                                     </div>
@@ -60,6 +60,13 @@
                     document.querySelector(".modal-body").innerHTML= '<h5 class="text-primary">書いた内容</h5>' + content;
                 }
             })
+            function Submit(){
+                const submitButton = document.querySelector("#endButton");
+                const myForm = document.endButton;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>終了';
+                submitButton.disabled = true;
+                myForm.submit();
+            }
         </script>
         <script src="./static/src/style.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
